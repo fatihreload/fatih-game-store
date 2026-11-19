@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101329">
+  <meta name="description" content="Fatih Game Store - Top up game, token PLN, pulsa, dan paket internet.">
+  <title>Fatih Game Store</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f5f6fb;
+      --surface: #ffffff;
+      --ink: #171a2e;
+      --muted: #747990;
+      --line: #e9eaf2;
+      --purple: #6d4aff;
+      --purple-dark: #5133dc;
+      --navy: #101329;
+      --green: #16a36a;
+      --shadow: 0 12px 35px rgba(30, 28, 70, .08);
+      font-family: "Plus Jakarta Sans", system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    .wrap { width: min(1120px, calc(100% - 32px)); margin: 0 auto; }
+    header { background: var(--navy); color: white; padding: 17px 0 32px; }
+    .topbar { display:flex; align-items:center; justify-content:space-between; gap:16px; }
+    .brand { display:flex; align-items:center; gap:11px; min-width:0; }
+    .brand-mark { width:42px; height:42px; border-radius:14px; display:grid; place-items:center; background:linear-gradient(135deg,#8d70ff,#5435e7); font-size:22px; box-shadow:0 7px 18px #6548f755; }
+    .brand-name { font-size:17px; font-weight:800; letter-spacing:.2px; }
+    .brand-sub { color:#b9bbd0; font-size:10px; margin-top:2px; letter-spacing:1.4px; }
+    .help-link { color:#e2defe; text-decoration:none; border:1px solid #ffffff2a; padding:9px 13px; border-radius:12px; font-size:12px; font-weight:700; white-space:nowrap; }
+    .hero { display:grid; grid-template-columns:1.25fr .75fr; align-items:center; gap:22px; padding:34px 0 8px; }
+    .eyebrow { display:inline-flex; align-items:center; gap:7px; background:#ffffff12; color:#d9d2ff; border:1px solid #ffffff1d; border-radius:30px; padding:7px 11px; font-size:11px; font-weight:700; }
+    .hero h1 { font-size:clamp(27px,5vw,44px); line-height:1.13; letter-spacing:-1.4px; margin:15px 0 10px; max-width:590px; }
+    .hero p { color:#c2c4d5; font-size:13px; line-height:1.8; margin:0; max-width:520px; }
+    .hero-art { justify-self:end; width:min(230px,100%); aspect-ratio:1.25; border-radius:26px; background:radial-gradient(circle at 70% 25%,#987cff 0,#6a4af4 28%,#32217d 65%,#211b4c 100%); display:grid; place-items:center; position:relative; overflow:hidden; box-shadow:0 18px 40px #05071966; }
+    .hero-art:before,.hero-art:after { content:""; position:absolute; border:1px solid #ffffff35; border-radius:50%; width:170px; height:170px; }
+    .hero-art:after { width:235px; height:235px; }
+    .hero-gamepad { font-size:76px; filter:drop-shadow(0 12px 10px #130b3c88); z-index:1; transform:rotate(-12deg); }
+    main { padding:22px 0 48px; }
+    .section-head { display:flex; align-items:end; justify-content:space-between; gap:12px; margin:8px 0 14px; }
+    .section-head h2 { margin:0; font-size:18px; letter-spacing:-.4px; }
+    .section-head p { margin:4px 0 0; color:var(--muted); font-size:11px; }
+    .category-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:12px; }
+    .category { border:1px solid var(--line); background:var(--surface); border-radius:17px; padding:16px 12px; display:flex; align-items:center; gap:11px; text-align:left; min-width:0; box-shadow:0 4px 14px #25234a05; transition:.18s ease; }
+    .category:hover,.category.active { border-color:#b8aaff; box-shadow:0 8px 22px #684cff16; transform:translateY(-2px); }
+    .category.active { background:#f7f5ff; }
+    .cat-icon { width:42px; height:42px; flex:0 0 42px; border-radius:13px; display:grid; place-items:center; font-size:21px; background:#f0edff; }
+    .category:nth-child(2) .cat-icon { background:#fff4df; }
+    .category:nth-child(3) .cat-icon { background:#e7f8f0; }
+    .category:nth-child(4) .cat-icon { background:#e8f3ff; }
+    .cat-title { font-size:12px; font-weight:800; display:block; }
+    .cat-sub { font-size:10px; color:var(--muted); display:block; margin-top:4px; }
+    .catalog { margin-top:27px; }
+    .search { width:min(300px,100%); position:relative; }
+    .search input { width:100%; border:1px solid var(--line); outline:none; border-radius:12px; padding:11px 13px 11px 36px; background:#fff; font-size:12px; }
+    .search input:focus { border-color:#a998ff; box-shadow:0 0 0 3px #6d4aff12; }
+    .search span { position:absolute; left:12px; top:9px; color:#8b8da0; }
+    .product-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:13px; }
+    .product { background:#fff; border:1px solid var(--line); border-radius:16px; overflow:hidden; box-shadow:0 5px 18px #25234a06; }
+    .product img { width:100%; height:135px; object-fit:cover; background:#efeff7; display:block; }
+    .product-body { padding:12px; }
+    .product-category { color:var(--purple); font-size:9px; font-weight:800; text-transform:uppercase; letter-spacing:.7px; }
+    .product h3 { font-size:12px; margin:5px 0 7px; }
+    .product p { font-size:10px; color:var(--muted); line-height:1.6; margin:0 0 11px; min-height:30px; }
+    .product-price { font-size:13px; font-weight:800; }
+    .soon { font-size:10px; color:#8b8da0; font-weight:700; }
+    .empty { grid-column:1/-1; border:1px dashed #d9d9e7; background:#fff; border-radius:16px; padding:30px 18px; text-align:center; color:var(--muted); }
+    .empty strong { color:var(--ink); display:block; margin:8px 0 4px; font-size:13px; }
+    .empty span { font-size:11px; line-height:1.7; }
+    .info-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:28px; }
+    .info { background:#fff; border:1px solid var(--line); border-radius:15px; padding:15px; }
+    .info-icon { font-size:20px; }
+    .info strong { display:block; font-size:11px; margin:8px 0 4px; }
+    .info p { font-size:10px; line-height:1.6; color:var(--muted); margin:0; }
+    footer { background:#101329; color:#b9bbcd; padding:22px 0; font-size:10px; }
+    .footer-inner { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .footer-inner strong { color:#fff; }
+    .status { display:inline-flex; align-items:center; gap:6px; font-size:10px; color:#c5c7d8; }
+    .dot { width:7px; height:7px; background:#34d399; border-radius:50%; }
+    @media (max-width:760px) {
+      .hero { grid-template-columns:1fr .45fr; gap:8px; padding-top:27px; }
+      .hero-art { width:145px; border-radius:20px; }
+      .hero-gamepad { font-size:55px; }
+      .category-grid { grid-template-columns:repeat(2,1fr); gap:9px; }
+      .category { padding:12px 10px; }
+      .product-grid { grid-template-columns:repeat(2,1fr); gap:10px; }
+      .product img { height:115px; }
+      .info-grid { grid-template-columns:1fr; gap:9px; }
+      .info { display:flex; gap:11px; align-items:center; padding:12px; }
+      .info-icon { font-size:22px; }
+      .info strong { margin:0 0 3px; }
+      .section-head { align-items:flex-start; flex-direction:column; }
+      .search { width:100%; }
+    }
+    @media (max-width:380px) {
+      .wrap { width:calc(100% - 22px); }
+      .brand-name { font-size:15px; }
+      .help-link { padding:8px 9px; font-size:10px; }
+      .hero h1 { font-size:26px; }
+      .hero-art { width:115px; }
+      .hero-gamepad { font-size:43px; }
+      .cat-icon { width:36px; height:36px; flex-basis:36px; }
+      .cat-title { font-size:11px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <div class="topbar">
+        <div class="brand">
+          <div class="brand-mark">🎮</div>
+          <div>
+            <div class="brand-name">FATIH GAME STORE</div>
+            <div class="brand-sub">DIGITAL PRODUCT STORE</div>
+          </div>
+        </div>
+        <a class="help-link" href="javascript:void(0)" id="helpLink">Pusat Bantuan</a>
+      </div>
+      <section class="hero">
+        <div>
+          <div class="eyebrow">⚡ LAYANAN DIGITAL DALAM SATU TEMPAT</div>
+          <h1>Top up dan kebutuhan digital, jadi lebih mudah.</h1>
+          <p>Pilih produk favoritmu. Pesanan diproses setelah pembayaran diverifikasi oleh admin.</p>
+        </div>
+        <div class="hero-art" aria-hidden="true"><div class="hero-gamepad">🎮</div></div>
+      </section>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section>
+      <div class="section-head">
+        <div>
+          <h2>Pilih Kategori</h2>
+          <p>Layanan digital yang tersedia di Fatih Game Store</p>
+        </div>
+      </div>
+      <div class="category-grid" id="categoryGrid">
+        <button class="category active" data-category="all"><span class="cat-icon">✨</span><span><span class="cat-title">Semua</span><span class="cat-sub">Semua produk</span></span></button>
+        <button class="category" data-category="game"><span class="cat-icon">🎮</span><span><span class="cat-title">Top Up Game</span><span class="cat-sub">Diamond & item</span></span></button>
+        <button class="category" data-category="token-pln"><span class="cat-icon">⚡</span><span><span class="cat-title">Token PLN</span><span class="cat-sub">Listrik prabayar</span></span></button>
+        <button class="category" data-category="pulsa"><span class="cat-icon">📱</span><span><span class="cat-title">Pulsa</span><span class="cat-sub">Semua operator</span></span></button>
+        <button class="category" data-category="paket-internet"><span class="cat-icon">🌐</span><span><span class="cat-title">Paket Internet</span><span class="cat-sub">Kuota all operator</span></span></button>
+      </div>
+    </section>
+
+    <section class="catalog">
+      <div class="section-head">
+        <div>
+          <h2 id="catalogTitle">Produk Pilihan</h2>
+          <p id="catalogSubtitle">Daftar produk akan ditampilkan di sini</p>
+        </div>
+        <label class="search"><span>⌕</span><input id="searchInput" type="search" placeholder="Cari game atau produk..."></label>
+      </div>
+      <div class="product-grid" id="productGrid">
+        <div class="empty"><div style="font-size:27px">🛍️</div><strong>Menyiapkan katalog produk</strong><span>Produk akan muncul setelah admin menambahkan daftar produk dan harga.</span></div>
+      </div>
+    </section>
+
+    <section class="info-grid">
+      <div class="info"><div class="info-icon">🔒</div><div><strong>Pembayaran diverifikasi</strong><p>Pesanan diproses setelah pembayaran diperiksa oleh admin.</p></div></div>
+      <div class="info"><div class="info-icon">💬</div><div><strong>Bantuan pelanggan</strong><p>Hubungi admin jika membutuhkan bantuan terkait pesanan.</p></div></div>
+      <div class="info"><div class="info-icon">⚡</div><div><strong>Proses oleh admin</strong><p>Pengiriman produk dilakukan secara manual sesuai antrean pesanan.</p></div></div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="wrap footer-inner">
+      <div><strong>FATIH GAME STORE</strong><br>© <span id="year"></span> Semua hak dilindungi.</div>
+      <div class="status"><span class="dot"></span> Layanan toko digital</div>
+    </div>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    // Project URL dan Publishable Key milik Fatih Game Store.
+    // Publishable Key aman digunakan di browser. Jangan masukkan Secret Key di sini.
+    const SUPABASE_URL = "https://iuvqqwpvowodirmlwojr.supabase.co";
+    const SUPABASE_PUBLISHABLE_KEY = "sb_publishable_ZIyFG9nTXbCJA30_Efnf0g_GzH80fTi";
+
+    const productGrid = document.getElementById("productGrid");
+    const categoryGrid = document.getElementById("categoryGrid");
+    const searchInput = document.getElementById("searchInput");
+    const catalogTitle = document.getElementById("catalogTitle");
+    const catalogSubtitle = document.getElementById("catalogSubtitle");
+    let allProducts = [];
+    let activeCategory = "all";
+
+    document.getElementById("year").textContent = new Date().getFullYear();
+
+    const categoryNames = {
+      "all": "Produk Pilihan",
+      "game": "Top Up Game",
+      "token-pln": "Token PLN",
+      "pulsa": "Pulsa",
+      "paket-internet": "Paket Internet"
+    };
+
+    function rupiah(value) {
+      return new Intl.NumberFormat("id-ID", {
+        style: "currency", currency: "IDR", maximumFractionDigits: 0
+      }).format(Number(value || 0));
+    }
+
+    function escapeHtml(value) {
+      return String(value ?? "").replace(/[&<>"']/g, char => ({
+        "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;"
+      })[char]);
+    }
+
+    function showEmpty(title, message) {
+      productGrid.innerHTML = `<div class="empty"><div style="font-size:27px">🛍️</div><strong>${escapeHtml(title)}</strong><span>${escapeHtml(message)}</span></div>`;
+    }
+
+    function renderProducts() {
+      const keyword = searchInput.value.trim().toLowerCase();
+      const filtered = allProducts.filter(product => {
+        const categoryMatch = activeCategory === "all" || product.category_slug === activeCategory;
+        const textMatch = `${product.name || ""} ${product.category_name || ""} ${product.description || ""}`.toLowerCase().includes(keyword);
+        return categoryMatch && textMatch;
+      });
+
+      catalogTitle.textContent = categoryNames[activeCategory] || "Produk Pilihan";
+      catalogSubtitle.textContent = filtered.length
+        ? `${filtered.length} produk tersedia`
+        : "Produk akan ditampilkan setelah ditambahkan admin";
+
+      if (!filtered.length) {
+        showEmpty(
+          allProducts.length ? "Produk belum tersedia" : "Produk segera hadir",
+          allProducts.length
+            ? "Belum ada produk pada kategori atau pencarian ini."
+            : "Admin sedang menyiapkan katalog produk Fatih Game Store."
+        );
+        return;
+      }
+
+      productGrid.innerHTML = filtered.map(product => `
+        <article class="product">
+          ${product.image_url
+            ? `<img src="${escapeHtml(product.image_url)}" alt="${escapeHtml(product.name)}" loading="lazy">`
+            : `<div style="height:135px;display:grid;place-items:center;background:linear-gradient(135deg,#eeeaff,#f7f7fc);font-size:42px">🎁</div>`}
+          <div class="product-body">
+            <div class="product-category">${escapeHtml(product.category_name)}</div>
+            <h3>${escapeHtml(product.name)}</h3>
+            <p>${escapeHtml(product.description || "Produk digital Fatih Game Store")}</p>
+            <div class="product-price">${rupiah(product.selling_price)}</div>
+          </div>
+        </article>
+      `).join("");
+    }
+
+    categoryGrid.addEventListener("click", event => {
+      const button = event.target.closest("[data-category]");
+      if (!button) return;
+      activeCategory = button.dataset.category;
+      categoryGrid.querySelectorAll(".category").forEach(item => {
+        item.classList.toggle("active", item === button);
+      });
+      renderProducts();
+    });
+
+    searchInput.addEventListener("input", renderProducts);
+
+    async function loadProducts() {
+      try {
+        if (!window.supabase || !SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
+          showEmpty("Katalog belum terhubung", "Periksa konfigurasi Supabase.");
+          return;
+        }
+        const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+        const { data, error } = await client
+          .from("public_products")
+          .select("id, category_name, category_slug, name, description, image_url, input_fields, selling_price, sort_order")
+          .order("sort_order", { ascending: true });
+
+        if (error) throw error;
+        allProducts = data || [];
+        renderProducts();
+      } catch (error) {
+        console.error("Gagal memuat katalog:", error);
+        showEmpty("Katalog belum dapat dimuat", "Silakan coba beberapa saat lagi.");
+      }
+    }
+
+    document.getElementById("helpLink").addEventListener("click", () => {
+      alert("Pusat bantuan Fatih Game Store akan segera tersedia.");
+    });
+
+    loadProducts();
+  </script>
+</body>
+</html>
