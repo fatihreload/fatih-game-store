@@ -59,23 +59,10 @@ h2{font-size:18px;margin:0 0 12px}h3{font-size:15px;margin:0 0 8px}.muted{color:
 
     <section id="tab-products" class="hidden">
       <div class="panel">
-        <h2>Tambah nominal game dengan cepat</h2>
-        <p class="muted">Setiap nominal akan dibuat sebagai satu produk tersendiri. Isi sendiri nominal dan harganya.</p>
-        <div class="formgrid">
-          <label>Nama game<input id="vGame" placeholder="Contoh: Free Fire"></label>
-          <label>Kategori<select id="vCategory"></select></label>
-          <label>Jumlah / nama nominal<input id="vAmount" placeholder="Contoh: 5 Diamond"></label>
-          <label>URL gambar (opsional)<input id="vImage" placeholder="https://..."></label>
-          <label>Harga modal (Rp)<input id="vCost" type="number" min="0" placeholder="Isi harga modal"></label>
-          <label>Harga jual (Rp)<input id="vSell" type="number" min="0" placeholder="Isi harga jual"></label>
-        </div>
-        <button id="addVariant">Tambah nominal</button>
-      </div>
-      <div class="panel">
-        <h2 id="productFormTitle">Tambah / edit produk manual</h2>
+        <h2 id="productFormTitle">Tambah / edit produk</h2>
         <input id="productId" type="hidden">
         <div class="formgrid">
-          <label>Nama produk<input id="pName" placeholder="Contoh: Mobile Legends 86 Diamond"></label>
+          <label>Nama produk / nominal<input id="pName" placeholder="Contoh: Free Fire 5 Diamond"></label>
           <label>Kategori<select id="pCategory"></select></label>
           <label>URL gambar produk<input id="pImage" placeholder="https://..."></label>
           <label>Urutan tampil<input id="pSort" type="number" value="0"></label>
@@ -169,43 +156,10 @@ h2{font-size:18px;margin:0 0 12px}h3{font-size:15px;margin:0 0 8px}.muted{color:
     const {error}=await db.from('categories').insert({name,slug,icon:$('cIcon').value.trim()||null,sort_order:Number($('cSort').value||0)});
     if(error)message('Gagal menambah kategori: '+error.message,true);else{$('cName').value=$('cSlug').value=$('cIcon').value='';message('Kategori berhasil ditambahkan.');await loadCategories();}
   };
-  $('addVariant').onclick=async()=>{
-    const game=$('vGame').value.trim();
-    const amount=$('vAmount').value.trim();
-    const category_id=$('vCategory').value;
-    const cost=Number($('vCost').value);
-    const sell=Number($('vSell').value);
-    if(!game||!amount||!category_id){message('Nama game, kategori, dan nominal wajib diisi.',true);return;}
-    if($('vCost').value===''||$('vSell').value===''||!Number.isFinite(cost)||!Number.isFinite(sell)||cost<0||sell<0){message('Isi harga modal dan harga jual dengan angka yang benar.',true);return;}
-    const button=$('addVariant');button.disabled=true;
-    try{
-      const payload={
-        name:game+' '+amount,
-        category_id,
-        description:'Top up '+game+' - '+amount,
-        image_url:$('vImage').value.trim()||null,
-        input_fields:[{name:'user_id',label:'Player ID',type:'text',required:true}],
-        is_active:true,
-        sort_order:0
-      };
-      const {data,error}=await db.from('products').insert(payload).select('id').single();
-      if(error)throw error;
-      const {error:priceError}=await db.from('product_prices').upsert(
-        {product_id:data.id,cost_price:cost,selling_price:sell},
-        {onConflict:'product_id'}
-      );
-      if(priceError)throw priceError;
-      $('vAmount').value='';$('vCost').value='';$('vSell').value='';
-      message('Nominal '+payload.name+' berhasil ditambahkan dengan harga yang kamu isi.');
-      await loadProducts();
-    }catch(e){
-      message('Gagal menambahkan nominal: '+e.message,true);
-    }finally{button.disabled=false;}
-  };
   async function loadProducts(){
     const {data,error}=await db.from('products').select('*,categories(name),product_prices(cost_price,selling_price)').order('sort_order').order('name');
     if(error)throw error;products=data||[];
-    $('productsBody').innerHTML=products.map(p=>{const pr=p.product_prices?.[0]||{};return `<tr><td><b>${esc(p.name)}</b><br><span class="muted">${esc(p.description||'')}</span></td><td>${esc(p.categories?.name||'-')}</td><td>${rupiah(pr.cost_price)}</td><td>${rupiah(pr.selling_price)}</td><td>${p.is_active?'Aktif':'Nonaktif'}</td><td><div class="actions"><button onclick="editProduct('${p.id}')">Edit</button><button class="secondary" onclick="toggleProduct('${p.id}',${!p.is_active})">${p.is_active?'Nonaktifkan':'Aktifkan'}</button></div></td></tr>`}).join('');
+    $('productsBody').innerHTML=products.map(p=>{const pr=p.product_prices?.[0]||{};return `<tr><td><b>${esc(p.name)}</b><br><span class="muted">${esc(p.description||'')}</span></td><td>${esc(p.categories?.name||'-')}</td><td>${rupiah(pr.cost_price)}</td><td>${rupiah(pr.selling_price)}</td><td>${p.is_active?'Aktif':'Nonaktif'}</td><td><div class="actions"><button onclick="editProduct('${p.id}')">Edit</button><button class="secondary" onclick="toggleProduct('${p.id}',${!p.is_active})">${p.is_active?'Nonaktifkan':'Aktifkan'}</button><button class="danger" onclick="deleteProduct('${p.id}')">Hapus</button></div></td></tr>`}).join('');
     $('statProducts').textContent=products.filter(p=>p.is_active).length;
   }
   window.editProduct=id=>{
@@ -214,11 +168,27 @@ h2{font-size:18px;margin:0 0 12px}h3{font-size:15px;margin:0 0 8px}.muted{color:
     document.querySelector('[data-tab="products"]').click();window.scrollTo({top:0,behavior:'smooth'});
   };
   window.toggleProduct=async(id,active)=>{const {error}=await db.from('products').update({is_active:active}).eq('id',id);if(error)message(error.message,true);else{message('Status produk diperbarui.');await loadProducts();}};
+  window.deleteProduct=async id=>{
+    const product=products.find(p=>p.id===id);
+    if(!product)return;
+    if(!confirm('Hapus produk "'+product.name+'"? Produk yang sudah dipakai dalam pesanan mungkin tidak bisa dihapus.'))return;
+    try{
+      const {error:priceError}=await db.from('product_prices').delete().eq('product_id',id);
+      if(priceError)throw priceError;
+      const {error}=await db.from('products').delete().eq('id',id);
+      if(error)throw error;
+      message('Produk berhasil dihapus.');
+      await loadProducts();
+    }catch(e){
+      message('Produk tidak dapat dihapus: '+e.message+' Jika produk sudah memiliki riwayat pesanan, nonaktifkan produk agar riwayat tetap aman.',true);
+    }
+  };
   $('resetProduct').onclick=()=>{['productId','pName','pImage','pDesc'].forEach(id=>$(id).value='');$('pCost').value=0;$('pSell').value=0;$('pSort').value=0;$('pFields').value='[]';$('productFormTitle').textContent='Tambah produk';};
   $('saveProduct').onclick=async()=>{
     try{
       const name=$('pName').value.trim(),category_id=$('pCategory').value;
       if(!name||!category_id)throw new Error('Nama produk dan kategori wajib diisi.');
+      if($('pCost').value===''||$('pSell').value===''||Number($('pCost').value)<0||Number($('pSell').value)<0)throw new Error('Harga modal dan harga jual wajib diisi dengan angka yang benar.');
       const input_fields=JSON.parse($('pFields').value||'[]');
       const payload={name,category_id,description:$('pDesc').value.trim()||null,image_url:$('pImage').value.trim()||null,input_fields,is_active:true,sort_order:Number($('pSort').value||0)};
       let id=$('productId').value;
