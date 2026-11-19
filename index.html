@@ -221,7 +221,16 @@
       .category { padding:7px 9px; }
     }
 
-  </style>
+  
+    .game-picker{margin-top:14px;padding:14px;border:1px solid #dedaf7;border-radius:16px;background:#fff}
+    .game-picker-title{font-weight:800;margin-bottom:10px;color:#29234a}
+    .game-picker-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .game-choice{display:flex;flex-direction:column;align-items:flex-start;gap:5px;padding:12px;border:1px solid #e5e1f4;border-radius:13px;background:#faf9ff;color:#27213f;text-align:left}
+    .game-choice.active{border-color:#7665e8;background:#f0edff;box-shadow:0 0 0 2px #7665e822}
+    .game-choice-icon{font-size:25px}.game-choice small{font-size:11px;color:#77718e}
+    @media(min-width:650px){.game-picker-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+
+</style>
 </head>
 <body>
   <header>
@@ -258,9 +267,10 @@
       <div class="category-grid" id="categoryGrid">
         <button class="category" data-category="game"><span class="cat-icon">🎮</span><span><span class="cat-title">Top Up Game</span></span></button>
         <button class="category" data-category="token-pln"><span class="cat-icon">⚡</span><span><span class="cat-title">Token PLN</span></span></button>
-        <button class="category" data-category="paket-internet"><span class="cat-icon">🌐</span><span><span class="cat-title">Paket Internet</span></span></button>
         <button class="category" data-category="pulsa"><span class="cat-icon">📱</span><span><span class="cat-title">Pulsa</span></span></button>
+        <button class="category" data-category="paket-internet"><span class="cat-icon">🌐</span><span><span class="cat-title">Paket Internet</span></span></button>
       </div>
+      <div id="gamePicker" class="game-picker" hidden></div>
     </section>
 
     <section class="catalog">
@@ -327,13 +337,13 @@
     const catalogSubtitle = document.getElementById("catalogSubtitle");
     let allProducts = [];
     let activeCategory = "";
+    let activeGame = "";
     let db = null;
     let selectedProduct = null;
 
     document.getElementById("year").textContent = new Date().getFullYear();
 
     const categoryNames = {
-      "all": "Produk Pilihan",
       "game": "Top Up Game",
       "token-pln": "Token PLN",
       "pulsa": "Pulsa",
@@ -356,40 +366,62 @@
       productGrid.innerHTML = `<div class="empty"><div style="font-size:27px">🛍️</div><strong>${escapeHtml(title)}</strong><span>${escapeHtml(message)}</span></div>`;
     }
 
+    const games = [
+      { name: "Free Fire", icon: "🔥", hint: "Diamond Free Fire" },
+      { name: "Mobile Legends", icon: "⚔️", hint: "Diamond Mobile Legends" },
+      { name: "PUBG Mobile", icon: "🎯", hint: "UC PUBG Mobile" },
+      { name: "Roblox", icon: "🧱", hint: "Robux Roblox" }
+    ];
+
+    function getProductGame(product) {
+      const description = String(product.description || "");
+      const marker = description.match(/\[\[GAME:([^\]]+)\]\]/i);
+      if (marker) return marker[1].trim();
+      const haystack = `${product.name || ""} ${description}`.toLowerCase();
+      return games.find(game => haystack.includes(game.name.toLowerCase()))?.name || "";
+    }
+
+    function cleanDescription(product) {
+      return String(product.description || "Produk digital Fatih Game Store")
+        .replace(/^\[\[GAME:[^\]]+\]\]\s*/i, "");
+    }
+
+    function renderGamePicker() {
+      const picker = document.getElementById("gamePicker");
+      if (activeCategory !== "game") { picker.hidden = true; picker.innerHTML = ""; return; }
+      picker.hidden = false;
+      picker.innerHTML = `<div class="game-picker-title">Pilih game yang ingin di top up</div><div class="game-picker-grid">${games.map(game => `
+        <button type="button" class="game-choice ${activeGame === game.name ? "active" : ""}" data-game="${escapeHtml(game.name)}">
+          <span class="game-choice-icon">${game.icon}</span><strong>${escapeHtml(game.name)}</strong><small>${escapeHtml(game.hint)}</small>
+        </button>`).join("")}</div>`;
+    }
+
     function renderProducts() {
-      if (!activeCategory) {
-  productGrid.innerHTML = `
-    <div class="empty">
-      <div style="font-size:27px">🎮</div>
-      <strong>Silakan Pilih Kategori</strong>
-      <span>Pilih Top Up Game, Token PLN, Pulsa, atau Paket Internet.</span>
-    </div>`;
-  catalogTitle.textContent = "Pilih Layanan";
-  catalogSubtitle.textContent = "Pilih kategori untuk melihat produk";
-  return;
-}
       const keyword = searchInput.value.trim().toLowerCase();
-      const filtered = allProducts.filter(product => {
-        const categoryMatch = activeCategory !== "" && product.category_slug === activeCategory;
-        const textMatch = `${product.name || ""} ${product.category_name || ""} ${product.description || ""}`.toLowerCase().includes(keyword);
-        return categoryMatch && textMatch;
-      });
-
-      catalogTitle.textContent = categoryNames[activeCategory] || "Produk Pilihan";
-      catalogSubtitle.textContent = filtered.length
-        ? `${filtered.length} produk tersedia`
-        : "Produk akan ditampilkan setelah ditambahkan admin";
-
-      if (!filtered.length) {
-        showEmpty(
-          allProducts.length ? "Produk belum tersedia" : "Produk segera hadir",
-          allProducts.length
-            ? "Belum ada produk pada kategori atau pencarian ini."
-            : "Admin sedang menyiapkan katalog produk Fatih Game Store."
-        );
+      if (!activeCategory) {
+        catalogTitle.textContent = "Pilih Layanan";
+        catalogSubtitle.textContent = "Pilih kategori untuk melihat produk";
+        showEmpty("Silakan Pilih Kategori", "Pilih Top Up Game, Token PLN, Pulsa, atau Paket Internet.");
         return;
       }
-
+      if (activeCategory === "game" && !activeGame) {
+        catalogTitle.textContent = "Pilih Game";
+        catalogSubtitle.textContent = "Pilih salah satu game terlebih dahulu";
+        showEmpty("Pilih Game Favoritmu", "Free Fire, Mobile Legends, PUBG Mobile, atau Roblox.");
+        return;
+      }
+      const filtered = allProducts.filter(product => {
+        const categoryMatch = product.category_slug === activeCategory;
+        const gameMatch = activeCategory !== "game" || getProductGame(product) === activeGame;
+        const textMatch = `${product.name || ""} ${product.category_name || ""} ${cleanDescription(product)}`.toLowerCase().includes(keyword);
+        return categoryMatch && gameMatch && textMatch;
+      });
+      catalogTitle.textContent = activeCategory === "game" ? activeGame : (categoryNames[activeCategory] || "Produk");
+      catalogSubtitle.textContent = filtered.length ? `${filtered.length} produk tersedia` : "Produk belum tersedia untuk pilihan ini";
+      if (!filtered.length) {
+        showEmpty("Produk belum tersedia", "Admin belum menambahkan produk untuk pilihan ini.");
+        return;
+      }
       productGrid.innerHTML = filtered.map(product => `
         <article class="product">
           ${product.image_url
@@ -398,7 +430,7 @@
           <div class="product-body">
             <div class="product-category">${escapeHtml(product.category_name)}</div>
             <h3>${escapeHtml(product.name)}</h3>
-            <p>${escapeHtml(product.description || "Produk digital Fatih Game Store")}</p>
+            <p>${escapeHtml(cleanDescription(product))}</p>
             <div class="product-price">${rupiah(product.selling_price)}</div>
             <button class="buy-btn" type="button" data-buy-id="${escapeHtml(product.id)}">Beli Sekarang</button>
           </div>
@@ -410,9 +442,19 @@
       const button = event.target.closest("[data-category]");
       if (!button) return;
       activeCategory = button.dataset.category;
+      activeGame = "";
+      renderGamePicker();
       categoryGrid.querySelectorAll(".category").forEach(item => {
         item.classList.toggle("active", item === button);
       });
+      renderProducts();
+    });
+
+    document.getElementById("gamePicker").addEventListener("click", event => {
+      const button = event.target.closest("[data-game]");
+      if (!button) return;
+      activeGame = button.dataset.game;
+      renderGamePicker();
       renderProducts();
     });
 
