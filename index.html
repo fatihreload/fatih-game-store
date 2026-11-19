@@ -133,6 +133,94 @@
       .cat-icon { width:36px; height:36px; flex-basis:36px; }
       .cat-title { font-size:11px; }
     }
+
+    /* Tema ringkas neon, terinspirasi tampilan Fatih Reload */
+    :root {
+      --bg:#070b19; --surface:#11152d; --ink:#f4f5ff; --muted:#a2a7c2;
+      --line:#263052; --purple:#10d9ee; --purple-dark:#8b45ff;
+      --navy:#080b1c; --shadow:0 8px 24px #0006;
+    }
+    body { background:radial-gradient(ellipse at 50% 0%,#14284a 0,#080b19 48%); color:var(--ink); padding-bottom:78px; }
+    .wrap { width:min(1080px,calc(100% - 28px)); }
+    header { padding:12px 0 15px; border-bottom:2px solid #10d9ee; box-shadow:0 5px 22px #00d9f044; }
+    .topbar { gap:8px; }
+    .brand-mark { width:39px;height:39px;border-radius:13px;background:linear-gradient(135deg,#08d9ed,#7c42ff); }
+    .brand-name { font-size:14px; letter-spacing:1px; }
+    .brand-sub { font-size:8px; letter-spacing:1.1px; }
+    .help-link { color:#12e4f4;border:1px solid #0fcde2;border-radius:12px;padding:8px 10px;font-size:10px; }
+    .hero { grid-template-columns:1fr auto; gap:10px; padding:15px 14px; margin-top:15px; border:1px solid #8b52ff; border-radius:19px; background:linear-gradient(115deg,#171238,#102b4b); box-shadow:0 0 18px #8b45ff30,inset 0 0 18px #09d9e522; }
+    .eyebrow { color:#35f5a0;background:#0d342e;border-color:#1e8e7b;padding:5px 8px;font-size:9px;letter-spacing:1.5px; }
+    .hero h1 { font-size:clamp(18px,4vw,27px);line-height:1.2;letter-spacing:.2px;margin:9px 0 6px; }
+    .hero p { font-size:10px;line-height:1.55;color:#c2c9e2; }
+    .hero-art { width:78px;border-radius:17px;background:radial-gradient(circle at 50% 40%,#1cdff2,#30216f 70%);box-shadow:0 0 18px #00d9ee44; }
+    .hero-art:before { width:75px;height:75px; }.hero-art:after { width:110px;height:110px; }
+    .hero-gamepad { font-size:38px; }
+    main { padding:13px 0 24px; }
+    .section-head { margin:7px 0 10px;align-items:center; }
+    .section-head h2 { font-size:14px;letter-spacing:1.2px;text-transform:uppercase; }
+    .section-head p { font-size:9px;color:#9ba4c2; }
+    .category-grid { display:flex;gap:7px;overflow-x:auto;padding:2px 1px 8px;scrollbar-width:none; }
+    .category-grid::-webkit-scrollbar { display:none; }
+    .category { flex:0 0 auto;display:flex;gap:6px;align-items:center;padding:8px 11px;border-radius:22px;background:#11172d;border:1px solid #29385e;color:#dce7ff;box-shadow:none; }
+    .category:hover,.category.active { transform:none;border-color:#11dced;background:linear-gradient(100deg,#113a51,#282052);box-shadow:0 0 12px #08d9ed35; }
+    .cat-icon { width:23px;height:23px;flex-basis:23px;border-radius:50%;font-size:13px;background:#292052; }
+    .category:nth-child(2) .cat-icon,.category:nth-child(3) .cat-icon,.category:nth-child(4) .cat-icon { background:#292052; }
+    .cat-title { font-size:10px;white-space:nowrap; }.cat-sub { display:none; }
+    .catalog { margin-top:13px; }
+    .catalog .section-head { flex-direction:row; }
+    .search { width:min(180px,52%); }
+    .search input { background:#0e1429;border-color:#29385e;color:#fff;border-radius:22px;padding:9px 10px 9px 30px;font-size:10px; }
+    .search span { left:10px;top:6px; }
+    .product-grid { grid-template-columns:repeat(4,minmax(0,1fr));gap:9px; }
+    .product { background:linear-gradient(155deg,#171533,#0d172c);border:1px solid #28466a;border-radius:13px;box-shadow:0 4px 14px #0005; }
+    .product img { height:95px;object-fit:cover; }
+    .product-body { padding:9px; }
+    .product-category { color:#19e2ef;font-size:8px;letter-spacing:.6px; }
+    .product h3 { font-size:11px;line-height:1.35;margin:4px 0 5px;color:#fff; }
+    .product p { font-size:9px;line-height:1.45;min-height:26px;margin-bottom:7px;color:#aab2cd; }
+    .product-price { color:#39f59a;font-size:12px; }
+    .buy-btn { margin-top:8px;padding:9px 7px;border-radius:9px;background:linear-gradient(100deg,#ec24cf,#8e45ff);font-size:10px;box-shadow:0 4px 14px #b12dff40; }
+    .empty { background:#10162c;border-color:#34466a;color:#aab2cd;padding:22px 14px; }
+    .empty strong { color:#fff; }
+    .info-grid { display:none; }
+    footer { background:#080b1c;border-top:1px solid #25385a;padding:12px 0;font-size:9px; }
+    .footer-inner { justify-content:center;text-align:center; }
+    .footer-inner .status { display:none; }
+    .modal-backdrop { background:#030612eF; }
+    .checkout-modal { background:#10162d;color:#f5f6ff;border:1px solid #16d7eb;border-radius:18px;box-shadow:0 0 28px #00d9ee30; }
+    .modal-head h2 { color:#fff; }.close-modal { background:#202947;color:#fff; }
+    .modal-desc,.checkout-product span,.form-hint { color:#aab2ce; }
+    .checkout-product { background:#171d39;border-color:#30436a; }
+    .checkout-product strong { color:#fff; }.checkout-product b { color:#38f59a; }
+    .checkout-form input,.checkout-form select { background:#0b1125;color:#fff;border-color:#34466a; }
+    .checkout-form label { color:#e8ecff; }
+    .submit-order { background:linear-gradient(100deg,#e923ce,#8745ff); }
+    .checkout-message { background:#29213b;color:#ffd5a8; }
+    .bottom-nav { position:fixed;z-index:500;left:10px;right:10px;bottom:10px;display:flex;justify-content:space-around;gap:4px;padding:8px 5px calc(8px + env(safe-area-inset-bottom));border:1px solid #315078;border-radius:20px;background:#0d1028ed;backdrop-filter:blur(14px);box-shadow:0 0 20px #00d9ee30; }
+    .bottom-nav a { color:#aab1d0;text-decoration:none;font-size:9px;font-weight:700;text-align:center;min-width:0;flex:1; }
+    .bottom-nav a span { display:block;font-size:19px;margin-bottom:2px; }
+    .bottom-nav a.active { color:#23e8f4;text-shadow:0 0 10px #00d9ee; }
+    @media(max-width:760px) {
+      .hero { grid-template-columns:1fr auto;padding:13px 12px; }
+      .hero-art { width:68px; }
+      .hero-gamepad { font-size:32px; }
+      .product-grid { grid-template-columns:repeat(2,minmax(0,1fr));gap:9px; }
+      .product img { height:105px; }
+      .section-head { flex-direction:row; }
+      .catalog .section-head { align-items:center; }
+      .search { width:48%; }
+      .product p { min-height:24px; }
+    }
+    @media(max-width:380px) {
+      .wrap { width:calc(100% - 22px); }
+      .brand-name { font-size:12px; }
+      .help-link { padding:7px 8px;font-size:9px; }
+      .hero-art { width:55px; }
+      .hero-gamepad { font-size:27px; }
+      .hero h1 { font-size:18px; }
+      .category { padding:7px 9px; }
+    }
+
   </style>
 </head>
 <body>
@@ -150,9 +238,9 @@
       </div>
       <section class="hero">
         <div>
-          <div class="eyebrow">⚡ LAYANAN DIGITAL DALAM SATU TEMPAT</div>
-          <h1>Top up dan kebutuhan digital, jadi lebih mudah.</h1>
-          <p>Pilih produk favoritmu. Pesanan diproses setelah pembayaran diverifikasi oleh admin.</p>
+          <div class="eyebrow">⚡ FATIH GAME STORE</div>
+          <h1>Top Up Game & Produk Digital</h1>
+          <p>Pilih produk, isi data tujuan, lalu lanjutkan pesanan. Mudah dan praktis.</p>
         </div>
         <div class="hero-art" aria-hidden="true"><div class="hero-gamepad">🎮</div></div>
       </section>
@@ -163,16 +251,16 @@
     <section>
       <div class="section-head">
         <div>
-          <h2>Pilih Kategori</h2>
-          <p>Layanan digital yang tersedia di Fatih Game Store</p>
+          <h2>Kategori</h2>
+          <p>Pilih layanan yang kamu butuhkan</p>
         </div>
       </div>
       <div class="category-grid" id="categoryGrid">
-        <button class="category active" data-category="all"><span class="cat-icon">✨</span><span><span class="cat-title">Semua</span><span class="cat-sub">Semua produk</span></span></button>
-        <button class="category" data-category="game"><span class="cat-icon">🎮</span><span><span class="cat-title">Top Up Game</span><span class="cat-sub">Diamond & item</span></span></button>
-        <button class="category" data-category="token-pln"><span class="cat-icon">⚡</span><span><span class="cat-title">Token PLN</span><span class="cat-sub">Listrik prabayar</span></span></button>
-        <button class="category" data-category="pulsa"><span class="cat-icon">📱</span><span><span class="cat-title">Pulsa</span><span class="cat-sub">Semua operator</span></span></button>
-        <button class="category" data-category="paket-internet"><span class="cat-icon">🌐</span><span><span class="cat-title">Paket Internet</span><span class="cat-sub">Kuota all operator</span></span></button>
+        <button class="category active" data-category="all"><span class="cat-icon">✨</span><span><span class="cat-title">Semua</span></span></button>
+        <button class="category" data-category="game"><span class="cat-icon">🎮</span><span><span class="cat-title">Top Up Game</span></span></button>
+        <button class="category" data-category="token-pln"><span class="cat-icon">⚡</span><span><span class="cat-title">Token PLN</span></span></button>
+        <button class="category" data-category="pulsa"><span class="cat-icon">📱</span><span><span class="cat-title">Pulsa</span></span></button>
+        <button class="category" data-category="paket-internet"><span class="cat-icon">🌐</span><span><span class="cat-title">Paket Internet</span></span></button>
       </div>
     </section>
 
@@ -189,11 +277,7 @@
       </div>
     </section>
 
-    <section class="info-grid">
-      <div class="info"><div class="info-icon">🔒</div><div><strong>Pembayaran diverifikasi</strong><p>Pesanan diproses setelah pembayaran diperiksa oleh admin.</p></div></div>
-      <div class="info"><div class="info-icon">💬</div><div><strong>Bantuan pelanggan</strong><p>Hubungi admin jika membutuhkan bantuan terkait pesanan.</p></div></div>
-      <div class="info"><div class="info-icon">⚡</div><div><strong>Proses oleh admin</strong><p>Pengiriman produk dilakukan secara manual sesuai antrean pesanan.</p></div></div>
-    </section>
+
   </main>
 
 
@@ -216,6 +300,12 @@
       </form>
     </div>
   </div>
+
+  <nav class="bottom-nav" aria-label="Navigasi utama">
+    <a href="#" class="active" id="navHome"><span>🏠</span>BERANDA</a>
+    <a href="#categoryGrid" id="navCategory"><span>🎮</span>KATEGORI</a>
+    <a href="javascript:void(0)" id="navHelp"><span>💬</span>BANTUAN</a>
+  </nav>
 
   <footer>
     <div class="wrap footer-inner">
@@ -450,8 +540,18 @@
       }
     });
 
-    document.getElementById("helpLink").addEventListener("click", () => {
+    function showHelp() {
       alert("Pusat bantuan Fatih Game Store akan segera tersedia.");
+    }
+    document.getElementById("helpLink").addEventListener("click", showHelp);
+    document.getElementById("navHelp").addEventListener("click", showHelp);
+    document.getElementById("navHome").addEventListener("click", event => {
+      event.preventDefault();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+    document.getElementById("navCategory").addEventListener("click", () => {
+      document.querySelectorAll(".bottom-nav a").forEach(a => a.classList.remove("active"));
+      document.getElementById("navCategory").classList.add("active");
     });
 
     loadProducts();
