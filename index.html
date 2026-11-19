@@ -84,6 +84,30 @@
     .footer-inner strong { color:#fff; }
     .status { display:inline-flex; align-items:center; gap:6px; font-size:10px; color:#c5c7d8; }
     .dot { width:7px; height:7px; background:#34d399; border-radius:50%; }
+
+    .buy-btn { width:100%; margin-top:10px; border:0; border-radius:10px; padding:10px 12px; color:#fff; background:linear-gradient(135deg,var(--purple),var(--purple-dark)); font-size:11px; font-weight:800; }
+    .buy-btn:hover { filter:brightness(1.06); }
+    .modal-backdrop { position:fixed; inset:0; z-index:1000; display:none; align-items:center; justify-content:center; padding:16px; background:#090b1dcc; overflow-y:auto; }
+    .modal-backdrop.show { display:flex; }
+    .checkout-modal { width:min(480px,100%); max-height:calc(100vh - 32px); overflow:auto; background:#fff; border-radius:20px; box-shadow:0 24px 70px #0005; padding:20px; }
+    .modal-head { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:5px; }
+    .modal-head h2 { margin:0; font-size:18px; }
+    .close-modal { width:34px; height:34px; border:0; border-radius:10px; background:#f0eff7; color:#555; font-size:21px; }
+    .modal-desc { color:var(--muted); font-size:11px; line-height:1.6; margin:5px 0 16px; }
+    .checkout-product { display:flex; justify-content:space-between; gap:12px; align-items:center; padding:12px; border:1px solid var(--line); background:#fafaff; border-radius:13px; margin-bottom:15px; }
+    .checkout-product strong { display:block; font-size:12px; }
+    .checkout-product span { color:var(--muted); font-size:10px; }
+    .checkout-product b { color:var(--purple); font-size:13px; white-space:nowrap; }
+    .checkout-form label { display:block; font-size:11px; font-weight:700; margin:12px 0 6px; }
+    .checkout-form input,.checkout-form select { width:100%; padding:12px; border:1px solid #dedfeb; border-radius:10px; outline:none; background:#fff; font:inherit; font-size:12px; }
+    .checkout-form input:focus,.checkout-form select:focus { border-color:#a998ff; box-shadow:0 0 0 3px #6d4aff12; }
+    .form-hint { color:var(--muted); font-size:10px; line-height:1.5; margin-top:5px; }
+    .submit-order { width:100%; border:0; border-radius:11px; padding:13px; background:var(--purple); color:white; font-size:12px; font-weight:800; margin-top:17px; }
+    .submit-order:disabled { opacity:.6; cursor:wait; }
+    .checkout-message { display:none; margin-top:12px; padding:11px; border-radius:10px; background:#fff3e8; color:#9a4c12; font-size:11px; line-height:1.5; }
+    .checkout-message.show { display:block; }
+    @media(max-width:760px) { .checkout-modal { padding:17px; } }
+
     @media (max-width:760px) {
       .hero { grid-template-columns:1fr .45fr; gap:8px; padding-top:27px; }
       .hero-art { width:145px; border-radius:20px; }
@@ -172,6 +196,27 @@
     </section>
   </main>
 
+
+  <div class="modal-backdrop" id="checkoutBackdrop" role="dialog" aria-modal="true" aria-labelledby="checkoutTitle">
+    <div class="checkout-modal">
+      <div class="modal-head"><h2 id="checkoutTitle">Checkout Pesanan</h2><button class="close-modal" type="button" id="closeCheckout" aria-label="Tutup">×</button></div>
+      <p class="modal-desc">Pastikan data tujuan sudah benar sebelum membuat pesanan.</p>
+      <div class="checkout-product"><div><strong id="checkoutProductName">Produk</strong><span id="checkoutCategory">Fatih Game Store</span></div><b id="checkoutPrice">Rp0</b></div>
+      <form class="checkout-form" id="checkoutForm">
+        <div id="targetFields"></div>
+        <label for="customerName">Nama pelanggan (opsional)</label>
+        <input id="customerName" name="customer_name" type="text" maxlength="80" placeholder="Nama kamu">
+        <label for="customerPhone">Nomor WhatsApp</label>
+        <input id="customerPhone" name="customer_phone" type="tel" inputmode="tel" maxlength="20" required placeholder="Contoh: 08xxxxxxxxxx">
+        <div class="form-hint">Nomor WhatsApp digunakan untuk informasi status pesanan.</div>
+        <label for="paymentMethod">Metode pembayaran</label>
+        <select id="paymentMethod" name="payment_method" required><option value="DANA">DANA</option><option value="GOPAY">GoPay</option></select>
+        <div class="checkout-message" id="checkoutMessage" role="alert"></div>
+        <button class="submit-order" id="submitOrder" type="submit">Buat Pesanan</button>
+      </form>
+    </div>
+  </div>
+
   <footer>
     <div class="wrap footer-inner">
       <div><strong>FATIH GAME STORE</strong><br>© <span id="year"></span> Semua hak dilindungi.</div>
@@ -193,6 +238,8 @@
     const catalogSubtitle = document.getElementById("catalogSubtitle");
     let allProducts = [];
     let activeCategory = "all";
+    let db = null;
+    let selectedProduct = null;
 
     document.getElementById("year").textContent = new Date().getFullYear();
 
@@ -253,6 +300,7 @@
             <h3>${escapeHtml(product.name)}</h3>
             <p>${escapeHtml(product.description || "Produk digital Fatih Game Store")}</p>
             <div class="product-price">${rupiah(product.selling_price)}</div>
+            <button class="buy-btn" type="button" data-buy-id="${escapeHtml(product.id)}">Beli Sekarang</button>
           </div>
         </article>
       `).join("");
@@ -276,8 +324,8 @@
           showEmpty("Katalog belum terhubung", "Periksa konfigurasi Supabase.");
           return;
         }
-        const client = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
-        const { data, error } = await client
+        db = window.supabase.createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+        const { data, error } = await db
           .from("public_products")
           .select("id, category_name, category_slug, name, description, image_url, input_fields, selling_price, sort_order")
           .order("sort_order", { ascending: true });
@@ -290,6 +338,117 @@
         showEmpty("Katalog belum dapat dimuat", "Silakan coba beberapa saat lagi.");
       }
     }
+
+
+    const checkoutBackdrop = document.getElementById("checkoutBackdrop");
+    const checkoutForm = document.getElementById("checkoutForm");
+    const targetFields = document.getElementById("targetFields");
+    const checkoutMessage = document.getElementById("checkoutMessage");
+
+    function closeCheckout() {
+      checkoutBackdrop.classList.remove("show");
+      checkoutMessage.classList.remove("show");
+      checkoutMessage.textContent = "";
+    }
+
+    function openCheckout(product) {
+      selectedProduct = product;
+      document.getElementById("checkoutProductName").textContent = product.name || "Produk";
+      document.getElementById("checkoutCategory").textContent = product.category_name || "Produk digital";
+      document.getElementById("checkoutPrice").textContent = rupiah(product.selling_price);
+      targetFields.innerHTML = "";
+      const fields = Array.isArray(product.input_fields) ? product.input_fields : [];
+      fields.forEach((field, index) => {
+        if (!field || !field.name) return;
+        const label = document.createElement("label");
+        label.htmlFor = `target_${index}`;
+        label.textContent = field.label || field.name;
+        const type = String(field.type || "text").toLowerCase();
+        let control;
+        if (type === "select" && Array.isArray(field.options)) {
+          control = document.createElement("select");
+          (field.options || []).forEach(option => {
+            const opt = document.createElement("option");
+            if (typeof option === "object") { opt.value = option.value ?? option.label ?? ""; opt.textContent = option.label ?? option.value ?? ""; }
+            else { opt.value = option; opt.textContent = option; }
+            control.appendChild(opt);
+          });
+        } else {
+          control = document.createElement("input");
+          control.type = ["text","number","tel","email"].includes(type) ? type : "text";
+        }
+        control.id = `target_${index}`;
+        control.name = field.name;
+        control.required = field.required !== false;
+        control.maxLength = 120;
+        control.placeholder = field.placeholder || `Masukkan ${field.label || field.name}`;
+        targetFields.appendChild(label);
+        targetFields.appendChild(control);
+      });
+      checkoutForm.reset();
+      document.getElementById("submitOrder").disabled = false;
+      document.getElementById("submitOrder").textContent = "Buat Pesanan";
+      // Reset mengembalikan metode pembayaran ke pilihan pertama.
+      document.getElementById("paymentMethod").value = "DANA";
+      checkoutBackdrop.classList.add("show");
+      document.getElementById("customerPhone").focus();
+    }
+
+    productGrid.addEventListener("click", event => {
+      const button = event.target.closest("[data-buy-id]");
+      if (!button) return;
+      const product = allProducts.find(item => String(item.id) === button.dataset.buyId);
+      if (product) openCheckout(product);
+    });
+
+    document.getElementById("closeCheckout").addEventListener("click", closeCheckout);
+    checkoutBackdrop.addEventListener("click", event => { if (event.target === checkoutBackdrop) closeCheckout(); });
+    document.addEventListener("keydown", event => { if (event.key === "Escape") closeCheckout(); });
+
+    checkoutForm.addEventListener("submit", async event => {
+      event.preventDefault();
+      if (!selectedProduct) return;
+      if (!db) {
+        checkoutMessage.textContent = "Koneksi toko belum siap. Muat ulang halaman dan coba lagi.";
+        checkoutMessage.classList.add("show");
+        return;
+      }
+      const submitButton = document.getElementById("submitOrder");
+      const formData = new FormData(checkoutForm);
+      const target_data = {};
+      targetFields.querySelectorAll("input,select").forEach(control => { target_data[control.name] = String(control.value || "").trim(); });
+      const customer_phone = String(formData.get("customer_phone") || "").trim();
+      if (!customer_phone) {
+        checkoutMessage.textContent = "Nomor WhatsApp wajib diisi.";
+        checkoutMessage.classList.add("show");
+        return;
+      }
+      submitButton.disabled = true;
+      submitButton.textContent = "Membuat pesanan...";
+      checkoutMessage.classList.remove("show");
+      try {
+        const { data, error } = await db.functions.invoke("create-order", {
+          body: {
+            product_id: selectedProduct.id,
+            customer_name: String(formData.get("customer_name") || "").trim(),
+            customer_phone,
+            target_data,
+            payment_method: String(formData.get("payment_method") || "DANA")
+          }
+        });
+        if (error) throw error;
+        if (!data || data.error) throw new Error(data?.error || "Pesanan belum berhasil dibuat.");
+        checkoutMessage.textContent = `Pesanan berhasil dibuat. Nomor pesanan: ${data.order_number || data.order_id || "tersimpan"}. Tahap pembayaran akan dilanjutkan setelah fitur pembayaran diaktifkan.`;
+        checkoutMessage.classList.add("show");
+        submitButton.textContent = "Pesanan berhasil dibuat";
+      } catch (error) {
+        console.error("Gagal membuat pesanan:", error);
+        checkoutMessage.textContent = error.message || "Pesanan gagal dibuat. Silakan coba lagi.";
+        checkoutMessage.classList.add("show");
+        submitButton.disabled = false;
+        submitButton.textContent = "Buat Pesanan";
+      }
+    });
 
     document.getElementById("helpLink").addEventListener("click", () => {
       alert("Pusat bantuan Fatih Game Store akan segera tersedia.");
