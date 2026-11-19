@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="id">
 <head>
@@ -7,547 +6,262 @@
 <title>Admin | Fatih Game Store</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-:root{--bg:#0b1020;--panel:#121a30;--line:#293653;--txt:#eef3ff;--muted:#9eabc5;--accent:#8b7cff;--green:#32d296;--red:#ff657a}
-*{box-sizing:border-box}
-body{margin:0;background:linear-gradient(140deg,#0b1020,#111a32);color:var(--txt);font:15px system-ui,sans-serif}
-button,input,textarea,select{font:inherit}
-button{border:0;border-radius:11px;padding:11px 15px;background:var(--accent);color:white;font-weight:700;cursor:pointer}
-button.secondary{background:#263451}
-button.danger{background:#a9344b}
-button:disabled{opacity:.5}
-.wrap{max-width:1180px;margin:auto;padding:22px}
-.hidden{display:none!important}
-.brand{font-weight:900;font-size:21px}
-.sub,.muted{color:var(--muted);font-size:13px}
-.panel{background:rgba(18,26,48,.96);border:1px solid var(--line);border-radius:17px;padding:18px;margin:14px 0}
-.login{max-width:420px;margin:9vh auto}
+:root{--bg:#0b1020;--panel:#121a30;--panel2:#18223c;--line:#293653;--txt:#eef3ff;--muted:#9eabc5;--accent:#8b7cff;--green:#32d296;--red:#ff657a;--yellow:#ffc857}
+*{box-sizing:border-box}body{margin:0;background:linear-gradient(140deg,#0b1020,#111a32);color:var(--txt);font:15px system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+button,input,textarea,select{font:inherit}button{border:0;border-radius:11px;padding:11px 15px;background:var(--accent);color:white;font-weight:700;cursor:pointer}button.secondary{background:#263451}button.danger{background:#a9344b}button:disabled{opacity:.5;cursor:not-allowed}
+.wrap{max-width:1180px;margin:auto;padding:22px}.hidden{display:none!important}.brand{font-weight:900;font-size:21px;letter-spacing:.3px}.sub{color:var(--muted);font-size:13px}
+.panel{background:rgba(18,26,48,.96);border:1px solid var(--line);border-radius:17px;padding:18px;margin:14px 0;box-shadow:0 12px 35px #0002}
+.login{max-width:420px;margin:9vh auto}.login h1{margin:0 0 5px}
 input,textarea,select{width:100%;background:#0c1428;border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:11px;margin-top:6px;outline:none}
-textarea{min-height:85px;resize:vertical}
-label{display:block;font-size:13px;color:#c4cee2;margin:12px 0}
-.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.row>*{flex:1}
-.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
-nav{display:flex;gap:8px;overflow:auto;padding:8px 0 3px}
-nav button{white-space:nowrap;background:#1d2945}
-nav button.active{background:var(--accent)}
-.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.stat{background:#17233d;border:1px solid var(--line);padding:15px;border-radius:14px}
-.stat b{font-size:25px;display:block}
-table{width:100%;border-collapse:collapse;min-width:760px}
-th,td{text-align:left;padding:11px;border-bottom:1px solid var(--line);vertical-align:top;font-size:13px}
-th{color:#aebbd5}
-.tablewrap{overflow:auto}
-.pill{display:inline-block;border-radius:99px;padding:4px 9px;background:#263451;font-size:12px}
-.ok{color:var(--green)}
-.err{color:var(--red)}
-.notice{padding:11px 13px;border-radius:10px;margin:12px 0;background:#1c2945;color:#dce6ff;white-space:pre-wrap}
-.actions{display:flex;gap:7px;flex-wrap:wrap}
-.actions button{padding:8px 10px;font-size:12px}
-h2{font-size:18px;margin:0 0 12px}
-.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}
-@media(max-width:650px){
-.wrap{padding:13px}
-.grid,.formgrid{grid-template-columns:1fr}
-.panel{padding:14px}
-.top .brand{font-size:18px}
-}
+textarea{min-height:85px;resize:vertical}label{display:block;font-size:13px;color:#c4cee2;margin:12px 0}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}.row>*{flex:1}.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+nav{display:flex;gap:8px;overflow:auto;padding:8px 0 3px}nav button{white-space:nowrap;background:#1d2945}nav button.active{background:var(--accent)}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.stat{background:#17233d;border:1px solid var(--line);padding:15px;border-radius:14px}.stat b{font-size:25px;display:block}
+table{width:100%;border-collapse:collapse;min-width:760px}th,td{text-align:left;padding:11px;border-bottom:1px solid var(--line);vertical-align:top;font-size:13px}th{color:#aebbd5}
+.tablewrap{overflow:auto}.pill{display:inline-block;border-radius:99px;padding:4px 9px;background:#263451;font-size:12px}.ok{color:var(--green)}.err{color:var(--red)}.notice{padding:11px 13px;border-radius:10px;margin:12px 0;background:#1c2945;color:#dce6ff;white-space:pre-wrap}.actions{display:flex;gap:7px;flex-wrap:wrap}.actions button{padding:8px 10px;font-size:12px}
+h2{font-size:18px;margin:0 0 12px}h3{font-size:15px;margin:0 0 8px}.muted{color:var(--muted)}.formgrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 12px}
+@media(max-width:650px){.wrap{padding:13px}.grid,.formgrid{grid-template-columns:1fr}.panel{padding:14px}.top .brand{font-size:18px}}
 </style>
 </head>
 <body>
 <div class="wrap">
+  <section id="loginBox" class="panel login">
+    <div class="brand">FATIH GAME STORE</div><div class="sub">Masuk ke Dashboard Admin</div>
+    <label>Email admin<input id="email" type="email" autocomplete="username" placeholder="Email admin"></label>
+    <label>Password<input id="password" type="password" autocomplete="current-password" placeholder="Password"></label>
+    <button id="loginBtn" style="width:100%">Masuk</button>
+    <div id="loginMsg" class="notice hidden"></div>
+  </section>
 
-<section id="loginBox" class="panel login">
-<div class="brand">FATIH GAME STORE</div>
-<div class="sub">Masuk ke Dashboard Admin</div>
-<label>Email admin<input id="email" type="email" autocomplete="username" placeholder="Email admin"></label>
-<label>Password<input id="password" type="password" autocomplete="current-password" placeholder="Password"></label>
-<button id="loginBtn" style="width:100%">Masuk</button>
-<div id="loginMsg" class="notice hidden"></div>
-</section>
+  <main id="app" class="hidden">
+    <header class="top">
+      <div><div class="brand">FATIH GAME STORE <span class="pill">ADMIN</span></div><div class="sub" id="who"></div></div>
+      <button class="secondary" id="logoutBtn">Keluar</button>
+    </header>
+    <nav>
+      <button class="active" data-tab="home">Ringkasan</button>
+      <button data-tab="products">Produk & Harga</button>
+      <button data-tab="categories">Kategori</button>
+      <button data-tab="orders">Pesanan</button>
+      <button data-tab="settings">Pengaturan</button>
+    </nav>
+    <div id="msg" class="notice hidden"></div>
 
-<main id="app" class="hidden">
-<header class="top">
-<div>
-<div class="brand">FATIH GAME STORE <span class="pill">ADMIN</span></div>
-<div class="sub" id="who"></div>
+    <section id="tab-home">
+      <div class="grid">
+        <div class="stat"><span class="muted">Total produk aktif</span><b id="statProducts">-</b></div>
+        <div class="stat"><span class="muted">Total pesanan</span><b id="statOrders">-</b></div>
+        <div class="stat"><span class="muted">Menunggu verifikasi</span><b id="statVerify">-</b></div>
+        <div class="stat"><span class="muted">Sedang diproses</span><b id="statProcess">-</b></div>
+      </div>
+      <div class="panel"><h2>Petunjuk singkat</h2><p class="muted">Tambahkan kategori terlebih dahulu, lalu buat produk dan isi harga modal serta harga jual. Pesanan pelanggan akan muncul di menu Pesanan setelah fitur pemesanan publik diaktifkan.</p></div>
+    </section>
+
+    <section id="tab-products" class="hidden">
+      <div class="panel">
+        <h2>Tambah nominal game dengan cepat</h2>
+        <p class="muted">Setiap nominal akan dibuat sebagai satu produk tersendiri. Isi sendiri nominal dan harganya.</p>
+        <div class="formgrid">
+          <label>Nama game<select id="vGame"><option value="">Pilih game</option><option>Free Fire</option><option>Mobile Legends</option><option>PUBG Mobile</option><option>Roblox</option></select></label>
+          <label>Kategori<select id="vCategory"></select></label>
+          <label>Jumlah / nama nominal<input id="vAmount" placeholder="Contoh: 5 Diamond"></label>
+          <label>URL gambar (opsional)<input id="vImage" placeholder="https://..."></label>
+          <label>Harga modal (Rp)<input id="vCost" type="number" min="0" placeholder="Isi harga modal"></label>
+          <label>Harga jual (Rp)<input id="vSell" type="number" min="0" placeholder="Isi harga jual"></label>
+        </div>
+        <button id="addVariant">Tambah nominal</button>
+      </div>
+      <div class="panel">
+        <h2 id="productFormTitle">Tambah / edit produk manual</h2>
+        <input id="productId" type="hidden">
+        <div class="formgrid">
+          <label>Nama produk<input id="pName" placeholder="Contoh: Mobile Legends 86 Diamond"></label>
+          <label>Kategori<select id="pCategory"></select></label>
+          <label>Game (khusus kategori Top Up Game)<select id="pGame"><option value="">Bukan produk game</option><option>Free Fire</option><option>Mobile Legends</option><option>PUBG Mobile</option><option>Roblox</option></select></label>
+          <label>URL gambar produk<input id="pImage" placeholder="https://..."></label>
+          <label>Urutan tampil<input id="pSort" type="number" value="0"></label>
+          <label>Harga modal (Rp)<input id="pCost" type="number" min="0" value="0"></label>
+          <label>Harga jual (Rp)<input id="pSell" type="number" min="0" value="0"></label>
+        </div>
+        <label>Deskripsi<textarea id="pDesc" placeholder="Keterangan produk (opsional)"></textarea></label>
+        <label>Data yang diminta dari pelanggan (JSON)<textarea id="pFields">[{"name":"user_id","label":"User ID","type":"text","required":true}]</textarea></label>
+        <div class="row"><button id="saveProduct">Simpan produk</button><button class="secondary" id="resetProduct" type="button">Batal / Kosongkan</button></div>
+      </div>
+      <div class="panel"><h2>Daftar produk</h2><div class="tablewrap"><table><thead><tr><th>Produk</th><th>Kategori</th><th>Modal</th><th>Jual</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="productsBody"></tbody></table></div></div>
+    </section>
+
+    <section id="tab-categories" class="hidden">
+      <div class="panel"><h2>Tambah kategori</h2><div class="formgrid">
+        <label>Nama kategori<input id="cName" placeholder="Contoh: Top Up Game"></label>
+        <label>Slug (huruf kecil, tanpa spasi)<input id="cSlug" placeholder="top-up-game"></label>
+        <label>Ikon (nama ikon)<input id="cIcon" placeholder="gamepad-2"></label>
+        <label>Urutan<input id="cSort" type="number" value="0"></label>
+      </div><button id="addCategory">Tambah kategori</button></div>
+      <div class="panel"><h2>Daftar kategori</h2><div class="tablewrap"><table><thead><tr><th>Nama</th><th>Slug</th><th>Ikon</th><th>Status</th><th>Aksi</th></tr></thead><tbody id="categoriesBody"></tbody></table></div></div>
+    </section>
+
+    <section id="tab-orders" class="hidden">
+      <div class="panel"><h2>Daftar pesanan</h2><div class="row"><select id="orderFilter"><option value="">Semua status pembayaran</option><option value="waiting_payment">Menunggu pembayaran</option><option value="pending_verification">Menunggu verifikasi</option><option value="paid">Sudah dibayar</option><option value="rejected">Ditolak</option><option value="expired">Kedaluwarsa</option><option value="cancelled">Dibatalkan</option></select><button id="refreshOrders" class="secondary">Muat ulang</button></div><div class="tablewrap"><table><thead><tr><th>Pesanan</th><th>Pelanggan</th><th>Produk / Target</th><th>Total</th><th>Pembayaran</th><th>Status pesanan</th><th>Catatan admin</th><th>Aksi</th></tr></thead><tbody id="ordersBody"></tbody></table></div></div>
+    </section>
+
+    <section id="tab-settings" class="hidden">
+      <div class="panel"><h2>Pengaturan toko & pembayaran</h2>
+        <label>Nama toko<input id="sStore"></label>
+        <div class="formgrid">
+          <label>Nomor DANA<input id="sDana"></label><label>Nama akun DANA<input id="sDanaName"></label>
+          <label>Nomor GoPay<input id="sGopay"></label><label>Nama akun GoPay<input id="sGopayName"></label>
+        </div>
+        <label><input id="sTelegram" type="checkbox" style="width:auto;margin-right:8px"> Aktifkan notifikasi Telegram (integrasi akan disambungkan pada tahap berikutnya)</label>
+        <button id="saveSettings">Simpan pengaturan</button>
+      </div>
+    </section>
+  </main>
 </div>
-<button class="secondary" id="logoutBtn">Keluar</button>
-</header>
-
-<nav>
-<button class="active" data-tab="home">Ringkasan</button>
-<button data-tab="products">Produk & Harga</button>
-<button data-tab="categories">Kategori</button>
-<button data-tab="orders">Pesanan</button>
-<button data-tab="settings">Pengaturan</button>
-</nav>
-
-<div id="msg" class="notice hidden"></div>
-
-<section id="tab-home">
-<div class="grid">
-<div class="stat"><span class="muted">Total produk aktif</span><b id="statProducts">-</b></div>
-<div class="stat"><span class="muted">Total pesanan</span><b id="statOrders">-</b></div>
-<div class="stat"><span class="muted">Menunggu verifikasi</span><b id="statVerify">-</b></div>
-<div class="stat"><span class="muted">Sedang diproses</span><b id="statProcess">-</b></div>
-</div>
-<div class="panel">
-<h2>Petunjuk singkat</h2>
-<p class="muted">Tambahkan kategori terlebih dahulu, lalu buat produk dan isi jumlah diamond serta harga modal dan harga jual.</p>
-</div>
-</section>
-
-<section id="tab-products" class="hidden">
-<div class="panel">
-<h2 id="productFormTitle">Tambah produk</h2>
-<input id="productId" type="hidden">
-
-<div class="formgrid">
-<label>Nama produk
-<input id="pName" placeholder="Contoh: Free Fire">
-</label>
-
-<label>Jumlah Diamond
-<input id="pDiamond" type="number" min="0" step="1" placeholder="Contoh: 5">
-</label>
-
-<label>Kategori
-<select id="pCategory"></select>
-</label>
-
-<label>URL gambar produk
-<input id="pImage" placeholder="https://...">
-</label>
-
-<label>Urutan tampil
-<input id="pSort" type="number" value="0">
-</label>
-
-<label>Harga modal (Rp)
-<input id="pCost" type="number" min="0" step="1" placeholder="Masukkan harga modal">
-</label>
-
-<label>Harga jual (Rp)
-<input id="pSell" type="number" min="0" step="1" placeholder="Masukkan harga jual">
-</label>
-</div>
-
-<label>Deskripsi
-<textarea id="pDesc" placeholder="Keterangan produk (opsional)"></textarea>
-</label>
-
-<label>Data yang diminta dari pelanggan (JSON)
-<textarea id="pFields">[{"name":"user_id","label":"User ID","type":"text","required":true}]</textarea>
-</label>
-
-<div class="row">
-<button id="saveProduct">Simpan produk</button>
-<button class="secondary" id="resetProduct" type="button">Batal / Kosongkan</button>
-</div>
-</div>
-
-<div class="panel">
-<h2>Daftar produk</h2>
-<div class="tablewrap">
-<table>
-<thead>
-<tr>
-<th>Produk</th>
-<th>Diamond</th>
-<th>Kategori</th>
-<th>Modal</th>
-<th>Jual</th>
-<th>Status</th>
-<th>Aksi</th>
-</tr>
-</thead>
-<tbody id="productsBody"></tbody>
-</table>
-</div>
-</div>
-</section>
-
-<section id="tab-categories" class="hidden">
-<div class="panel">
-<h2>Tambah kategori</h2>
-<div class="formgrid">
-<label>Nama kategori<input id="cName" placeholder="Contoh: Top Up Game"></label>
-<label>Slug<input id="cSlug" placeholder="top-up-game"></label>
-<label>Ikon<input id="cIcon" placeholder="gamepad-2"></label>
-<label>Urutan<input id="cSort" type="number" value="0"></label>
-</div>
-<button id="addCategory">Tambah kategori</button>
-</div>
-<div class="panel">
-<h2>Daftar kategori</h2>
-<div class="tablewrap">
-<table>
-<thead><tr><th>Nama</th><th>Slug</th><th>Ikon</th><th>Status</th><th>Aksi</th></tr></thead>
-<tbody id="categoriesBody"></tbody>
-</table>
-</div>
-</div>
-</section>
-
-<section id="tab-orders" class="hidden">
-<div class="panel">
-<h2>Daftar pesanan</h2>
-<div class="row">
-<select id="orderFilter">
-<option value="">Semua status pembayaran</option>
-<option value="waiting_payment">Menunggu pembayaran</option>
-<option value="pending_verification">Menunggu verifikasi</option>
-<option value="paid">Sudah dibayar</option>
-<option value="rejected">Ditolak</option>
-<option value="expired">Kedaluwarsa</option>
-<option value="cancelled">Dibatalkan</option>
-</select>
-<button id="refreshOrders" class="secondary">Muat ulang</button>
-</div>
-<div class="tablewrap">
-<table>
-<thead>
-<tr>
-<th>Pesanan</th><th>Pelanggan</th><th>Produk / Target</th><th>Total</th><th>Pembayaran</th><th>Status pesanan</th><th>Catatan admin</th><th>Aksi</th>
-</tr>
-</thead>
-<tbody id="ordersBody"></tbody>
-</table>
-</div>
-</div>
-</section>
-
-<section id="tab-settings" class="hidden">
-<div class="panel">
-<h2>Pengaturan toko & pembayaran</h2>
-<label>Nama toko<input id="sStore"></label>
-<div class="formgrid">
-<label>Nomor DANA<input id="sDana"></label>
-<label>Nama akun DANA<input id="sDanaName"></label>
-<label>Nomor GoPay<input id="sGopay"></label>
-<label>Nama akun GoPay<input id="sGopayName"></label>
-</div>
-<label><input id="sTelegram" type="checkbox" style="width:auto;margin-right:8px"> Aktifkan notifikasi Telegram</label>
-<button id="saveSettings">Simpan pengaturan</button>
-</div>
-</section>
-</main>
-</div>
-
 <script>
 (() => {
-const SUPABASE_URL='https://iuvqqwpvowodirmlwojr.supabase.co';
-const SUPABASE_ANON_KEY='sb_publishable_ZIyFG9nTXbCJA30_Efnf0g_GzH80fTi';
-const db=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-const $=id=>document.getElementById(id);
-
-let categories=[],products=[],orders=[],prices=[];
-
-const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const rupiah=n=>'Rp '+Number(n??0).toLocaleString('id-ID');
-
-function message(text,bad=false,target='msg'){
-const el=$(target);
-el.textContent=text;
-el.className='notice '+(bad?'err':'ok');
-}
-function hideMessage(target='msg'){$(target).classList.add('hidden');}
-
-async function adminCheck(){
-const {data:{user},error}=await db.auth.getUser();
-if(error||!user)return false;
-const {data,error:e}=await db.from('admin_users').select('user_id').eq('user_id',user.id).maybeSingle();
-if(e)throw e;
-if(data)$('who').textContent=user.email||'Admin';
-return !!data;
-}
-
-async function startApp(){
-try{
-if(!await adminCheck()){
-await db.auth.signOut();
-$('loginBox').classList.remove('hidden');
-$('app').classList.add('hidden');
-message('Akun ini belum terdaftar sebagai admin. Periksa data admin_users.','bad','loginMsg');
-return;
-}
-$('loginBox').classList.add('hidden');
-$('app').classList.remove('hidden');
-await Promise.all([loadCategories(),loadProducts(),loadOrders(),loadSettings()]);
-}catch(e){
-$('loginBox').classList.remove('hidden');
-$('app').classList.add('hidden');
-message('Gagal memeriksa akses admin: '+e.message,true,'loginMsg');
-}
-}
-
-$('loginBtn').onclick=async()=>{
-hideMessage('loginMsg');
-$('loginBtn').disabled=true;
-const {error}=await db.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});
-$('loginBtn').disabled=false;
-if(error){message('Login gagal: '+error.message,true,'loginMsg');return;}
-await startApp();
-};
-
-$('logoutBtn').onclick=async()=>{await db.auth.signOut();location.reload();};
-
-document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
-document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x===b));
-document.querySelectorAll('main section[id^="tab-"]').forEach(s=>s.classList.toggle('hidden',s.id!=='tab-'+b.dataset.tab));
-});
-
-async function loadCategories(){
-const {data,error}=await db.from('categories').select('*').order('sort_order').order('name');
-if(error)throw error;
-categories=data||[];
-$('pCategory').innerHTML=categories.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');
-$('categoriesBody').innerHTML=categories.map(c=>`
-<tr>
-<td>${esc(c.name)}</td><td>${esc(c.slug)}</td><td>${esc(c.icon||'-')}</td>
-<td>${c.is_active?'Aktif':'Nonaktif'}</td>
-<td><div class="actions"><button class="secondary" onclick="toggleCategory('${c.id}',${!c.is_active})">${c.is_active?'Nonaktifkan':'Aktifkan'}</button></div></td>
-</tr>`).join('');
-}
-
-window.toggleCategory=async(id,active)=>{
-const {error}=await db.from('categories').update({is_active:active}).eq('id',id);
-if(error)message(error.message,true);
-else{message('Status kategori diperbarui.');await loadCategories();}
-};
-
-$('addCategory').onclick=async()=>{
-const name=$('cName').value.trim(),slug=$('cSlug').value.trim().toLowerCase();
-if(!name||!slug){message('Nama dan slug kategori wajib diisi.',true);return;}
-const {error}=await db.from('categories').insert({
-name,slug,icon:$('cIcon').value.trim()||null,sort_order:Number($('cSort').value||0)
-});
-if(error)message('Gagal menambah kategori: '+error.message,true);
-else{
-$('cName').value=$('cSlug').value=$('cIcon').value='';
-message('Kategori berhasil ditambahkan.');
-await loadCategories();
-}
-};
-
-async function loadProducts(){
-const {data,error}=await db.from('products').select('*,categories(name)').order('sort_order').order('name');
-if(error)throw error;
-products=data||[];
-
-prices=[];
-if(products.length){
-const ids=products.map(p=>p.id);
-const result=await db.from('product_prices').select('product_id,cost_price,selling_price').in('product_id',ids);
-if(result.error)throw result.error;
-prices=result.data||[];
-}
-
-products=products.map(p=>{
-const price=prices.find(x=>x.product_id===p.id)||{};
-return {...p,price};
-});
-
-$('productsBody').innerHTML=products.map(p=>`
-<tr>
-<td><b>${esc(p.name)}</b><br><span class="muted">${esc(p.description||'')}</span></td>
-<td>${p.diamond_amount==null?'-':esc(p.diamond_amount)+' Diamond'}</td>
-<td>${esc(p.categories?.name||'-')}</td>
-<td>${rupiah(p.price.cost_price)}</td>
-<td>${rupiah(p.price.selling_price)}</td>
-<td>${p.is_active?'Aktif':'Nonaktif'}</td>
-<td>
-<div class="actions">
-<button onclick="editProduct('${p.id}')">Edit</button>
-<button class="secondary" onclick="toggleProduct('${p.id}',${!p.is_active})">${p.is_active?'Nonaktifkan':'Aktifkan'}</button>
-<button class="danger" onclick="deleteProduct('${p.id}')">Hapus</button>
-</div>
-</td>
-</tr>`).join('');
-
-$('statProducts').textContent=products.filter(p=>p.is_active).length;
-}
-
-window.editProduct=id=>{
-const p=products.find(x=>x.id===id);
-if(!p)return;
-$('productId').value=p.id;
-$('pName').value=p.name||'';
-$('pDiamond').value=p.diamond_amount??'';
-$('pCategory').value=p.category_id;
-$('pImage').value=p.image_url||'';
-$('pSort').value=p.sort_order||0;
-$('pCost').value=p.price.cost_price??'';
-$('pSell').value=p.price.selling_price??'';
-$('pDesc').value=p.description||'';
-$('pFields').value=JSON.stringify(p.input_fields||[],null,2);
-$('productFormTitle').textContent='Edit produk';
-document.querySelector('[data-tab="products"]').click();
-window.scrollTo({top:0,behavior:'smooth'});
-};
-
-window.toggleProduct=async(id,active)=>{
-const {error}=await db.from('products').update({is_active:active}).eq('id',id);
-if(error)message(error.message,true);
-else{message('Status produk diperbarui.');await loadProducts();}
-};
-
-window.deleteProduct=async id=>{
-const product=products.find(p=>p.id===id);
-if(!product)return;
-if(!confirm('Hapus produk "'+product.name+'"?'))return;
-try{
-const {error:priceError}=await db.from('product_prices').delete().eq('product_id',id);
-if(priceError)throw priceError;
-const {error}=await db.from('products').delete().eq('id',id);
-if(error)throw error;
-message('Produk berhasil dihapus.');
-await loadProducts();
-}catch(e){
-message('Produk tidak dapat dihapus: '+e.message+' Jika sudah memiliki riwayat pesanan, nonaktifkan produk.',true);
-}
-};
-
-$('resetProduct').onclick=()=>{
-['productId','pName','pDiamond','pImage','pDesc'].forEach(id=>$(id).value='');
-$('pCost').value='';
-$('pSell').value='';
-$('pSort').value=0;
-$('pFields').value='[{"name":"user_id","label":"User ID","type":"text","required":true}]';
-$('productFormTitle').textContent='Tambah produk';
-};
-
-$('saveProduct').onclick=async()=>{
-try{
-const name=$('pName').value.trim();
-const category_id=$('pCategory').value;
-const diamondText=$('pDiamond').value.trim();
-const costText=$('pCost').value.trim();
-const sellText=$('pSell').value.trim();
-
-if(!name||!category_id)throw new Error('Nama produk dan kategori wajib diisi.');
-if(diamondText!==''&&(!Number.isInteger(Number(diamondText))||Number(diamondText)<0))throw new Error('Jumlah diamond harus berupa angka bulat.');
-if(costText===''||sellText==='')throw new Error('Harga modal dan harga jual wajib diisi.');
-if(!Number.isFinite(Number(costText))||!Number.isFinite(Number(sellText))||Number(costText)<0||Number(sellText)<0)throw new Error('Harga harus berupa angka yang benar.');
-
-const input_fields=JSON.parse($('pFields').value||'[]');
-const payload={
-name,
-diamond_amount:diamondText===''?null:Number(diamondText),
-category_id,
-description:$('pDesc').value.trim()||null,
-image_url:$('pImage').value.trim()||null,
-input_fields,
-is_active:true,
-sort_order:Number($('pSort').value||0)
-};
-
-let id=$('productId').value;
-if(id){
-const {error}=await db.from('products').update(payload).eq('id',id);
-if(error)throw error;
-}else{
-const {data,error}=await db.from('products').insert(payload).select('id').single();
-if(error)throw error;
-id=data.id;
-}
-
-const pricePayload={
-product_id:id,
-cost_price:Number(costText),
-selling_price:Number(sellText)
-};
-const {data:existingPrice,error:checkError}=await db.from('product_prices').select('product_id').eq('product_id',id).maybeSingle();
-if(checkError)throw checkError;
-
-let priceResult;
-if(existingPrice){
-priceResult=await db.from('product_prices').update({
-cost_price:pricePayload.cost_price,
-selling_price:pricePayload.selling_price
-}).eq('product_id',id);
-}else{
-priceResult=await db.from('product_prices').insert(pricePayload);
-}
-if(priceResult.error)throw priceResult.error;
-
-$('resetProduct').click();
-message('Produk, jumlah diamond, dan harga berhasil disimpan.');
-await loadProducts();
-}catch(e){
-message('Gagal menyimpan produk: '+e.message,true);
-}
-};
-
-async function loadOrders(){
-let q=db.from('orders').select('*').order('created_at',{ascending:false}).limit(100);
-if($('orderFilter').value)q=q.eq('payment_status',$('orderFilter').value);
-const {data,error}=await q;
-if(error)throw error;
-orders=data||[];
-
-$('ordersBody').innerHTML=orders.map(o=>`
-<tr>
-<td><b>${esc(o.order_number)}</b><br>${new Date(o.created_at).toLocaleString('id-ID')}</td>
-<td>${esc(o.customer_name)}<br>${esc(o.customer_phone)}</td>
-<td>${esc(o.product_name)}<br><span class="muted">${esc(JSON.stringify(o.target_data||{}))}</span></td>
-<td>${rupiah(o.amount_idr)}<br>${esc(o.payment_method)}</td>
-<td><select id="pay-${o.id}">${['waiting_payment','pending_verification','paid','rejected','expired','cancelled'].map(s=>`<option value="${s}" ${o.payment_status===s?'selected':''}>${s}</option>`).join('')}</select></td>
-<td><select id="ord-${o.id}">${['waiting_payment','processing','completed','failed','cancelled'].map(s=>`<option value="${s}" ${o.order_status===s?'selected':''}>${s}</option>`).join('')}</select></td>
-<td><textarea id="note-${o.id}" style="min-width:140px;min-height:55px">${esc(o.admin_note||'')}</textarea>${o.payment_proof_path?`<br><span class="muted">Bukti: ${esc(o.payment_proof_path)}</span>`:''}</td>
-<td><button onclick="saveOrder('${o.id}')">Simpan</button></td>
-</tr>`).join('');
-
-$('statOrders').textContent=orders.length;
-$('statVerify').textContent=orders.filter(o=>o.payment_status==='pending_verification').length;
-$('statProcess').textContent=orders.filter(o=>o.order_status==='processing').length;
-}
-
-window.saveOrder=async id=>{
-const old=orders.find(o=>o.id===id);
-const payment_status=$('pay-'+id).value;
-const order_status=$('ord-'+id).value;
-const admin_note=$('note-'+id).value.trim()||null;
-const patch={payment_status,order_status,admin_note};
-if(payment_status==='paid'&&old.payment_status!=='paid')patch.paid_at=new Date().toISOString();
-if(order_status==='completed'&&old.order_status!=='completed')patch.completed_at=new Date().toISOString();
-const {error}=await db.from('orders').update(patch).eq('id',id);
-if(error)message('Gagal memperbarui pesanan: '+error.message,true);
-else{message('Pesanan berhasil diperbarui.');await loadOrders();}
-};
-
-$('orderFilter').onchange=()=>loadOrders().catch(e=>message(e.message,true));
-$('refreshOrders').onclick=()=>loadOrders().catch(e=>message(e.message,true));
-
-async function loadSettings(){
-const {data,error}=await db.from('store_settings').select('*').eq('id',1).maybeSingle();
-if(error)throw error;
-if(!data)return;
-$('sStore').value=data.store_name||'Fatih Game Store';
-$('sDana').value=data.dana_number||'';
-$('sDanaName').value=data.dana_name||'';
-$('sGopay').value=data.gopay_number||'';
-$('sGopayName').value=data.gopay_name||'';
-$('sTelegram').checked=!!data.telegram_notifications_enabled;
-}
-
-$('saveSettings').onclick=async()=>{
-const payload={
-id:1,
-store_name:$('sStore').value.trim()||'Fatih Game Store',
-dana_number:$('sDana').value.trim()||null,
-dana_name:$('sDanaName').value.trim()||null,
-gopay_number:$('sGopay').value.trim()||null,
-gopay_name:$('sGopayName').value.trim()||null,
-telegram_notifications_enabled:$('sTelegram').checked
-};
-const {error}=await db.from('store_settings').upsert(payload,{onConflict:'id'});
-if(error)message('Gagal menyimpan pengaturan: '+error.message,true);
-else message('Pengaturan berhasil disimpan.');
-};
-
-$('pCategory').addEventListener('change',()=>{});
-db.auth.getSession().then(({data})=>{if(data.session)startApp();});
+  const SUPABASE_URL = 'https://iuvqqwpvowodirmlwojr.supabase.co';
+  const SUPABASE_ANON_KEY = 'sb_publishable_ZIyFG9nTXbCJA30_Efnf0g_GzH80fTi';
+  const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  const $ = id => document.getElementById(id);
+  let categories = [], products = [], orders = [];
+  const esc = v => String(v ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const rupiah = n => 'Rp ' + Number(n || 0).toLocaleString('id-ID');
+  function message(text, bad=false, target='msg') { const el=$(target); el.textContent=text; el.classList.remove('hidden'); el.className='notice '+(bad?'err':'ok'); }
+  function hideMessage(target='msg'){ $(target).classList.add('hidden'); }
+  async function adminCheck() {
+    const {data:{user},error}=await db.auth.getUser();
+    if(error || !user) return false;
+    const {data,error:e}=await db.from('admin_users').select('user_id').eq('user_id',user.id).maybeSingle();
+    if(e) throw e;
+    if(data) $('who').textContent=user.email || 'Admin';
+    return !!data;
+  }
+  async function startApp() {
+    try {
+      if(!await adminCheck()) { await db.auth.signOut(); $('loginBox').classList.remove('hidden'); $('app').classList.add('hidden'); message('Akun ini belum terdaftar sebagai admin. Periksa data admin_users.','bad','loginMsg'); return; }
+      $('loginBox').classList.add('hidden'); $('app').classList.remove('hidden');
+      await Promise.all([loadCategories(),loadProducts(),loadOrders(),loadSettings()]);
+    } catch(e) { $('loginBox').classList.remove('hidden'); $('app').classList.add('hidden'); message('Gagal memeriksa akses admin: '+e.message,true,'loginMsg'); }
+  }
+  $('loginBtn').onclick=async()=>{
+    hideMessage('loginMsg'); $('loginBtn').disabled=true;
+    const {error}=await db.auth.signInWithPassword({email:$('email').value.trim(),password:$('password').value});
+    $('loginBtn').disabled=false;
+    if(error){message('Login gagal: '+error.message,true,'loginMsg');return;}
+    await startApp();
+  };
+  $('logoutBtn').onclick=async()=>{await db.auth.signOut();location.reload();};
+  document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('active',x===b));
+    document.querySelectorAll('main section[id^="tab-"]').forEach(s=>s.classList.toggle('hidden',s.id!=='tab-'+b.dataset.tab));
+  });
+  async function loadCategories(){
+    const {data,error}=await db.from('categories').select('*').order('sort_order').order('name');
+    if(error) throw error; categories=data||[];
+    const categoryOptions=categories.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');
+    $('pCategory').innerHTML=categoryOptions;
+    $('vCategory').innerHTML=categoryOptions;
+    $('categoriesBody').innerHTML=categories.map(c=>`<tr><td>${esc(c.name)}</td><td>${esc(c.slug)}</td><td>${esc(c.icon||'-')}</td><td>${c.is_active?'Aktif':'Nonaktif'}</td><td><div class="actions"><button class="secondary" onclick="toggleCategory('${c.id}',${!c.is_active})">${c.is_active?'Nonaktifkan':'Aktifkan'}</button></div></td></tr>`).join('');
+  }
+  window.toggleCategory=async(id,active)=>{const {error}=await db.from('categories').update({is_active:active}).eq('id',id);if(error)message(error.message,true);else{message('Status kategori diperbarui.');await loadCategories();}};
+  $('addCategory').onclick=async()=>{
+    const name=$('cName').value.trim(),slug=$('cSlug').value.trim().toLowerCase();
+    if(!name||!slug){message('Nama dan slug kategori wajib diisi.',true);return;}
+    const {error}=await db.from('categories').insert({name,slug,icon:$('cIcon').value.trim()||null,sort_order:Number($('cSort').value||0)});
+    if(error)message('Gagal menambah kategori: '+error.message,true);else{$('cName').value=$('cSlug').value=$('cIcon').value='';message('Kategori berhasil ditambahkan.');await loadCategories();}
+  };
+  $('addVariant').onclick=async()=>{
+    const game=$('vGame').value.trim();
+    const amount=$('vAmount').value.trim();
+    const category_id=$('vCategory').value;
+    const cost=Number($('vCost').value);
+    const sell=Number($('vSell').value);
+    if(!game||!amount||!category_id){message('Nama game, kategori, dan nominal wajib diisi.',true);return;}
+    if($('vCost').value===''||$('vSell').value===''||!Number.isFinite(cost)||!Number.isFinite(sell)||cost<0||sell<0){message('Isi harga modal dan harga jual dengan angka yang benar.',true);return;}
+    const button=$('addVariant');button.disabled=true;
+    try{
+      const payload={
+        name:game+' '+amount,
+        category_id,
+        description:'[[GAME:'+game+']] Top up '+game+' - '+amount,
+        image_url:$('vImage').value.trim()||null,
+        input_fields:[{name:'user_id',label:'Player ID',type:'text',required:true}],
+        is_active:true,
+        sort_order:0
+      };
+      const {data,error}=await db.from('products').insert(payload).select('id').single();
+      if(error)throw error;
+      const {error:priceError}=await db.from('product_prices').upsert(
+        {product_id:data.id,cost_price:cost,selling_price:sell},
+        {onConflict:'product_id'}
+      );
+      if(priceError)throw priceError;
+      $('vAmount').value='';$('vCost').value='';$('vSell').value='';
+      message('Nominal '+payload.name+' berhasil ditambahkan dengan harga yang kamu isi.');
+      await loadProducts();
+    }catch(e){
+      message('Gagal menambahkan nominal: '+e.message,true);
+    }finally{button.disabled=false;}
+  };
+  async function loadProducts(){
+    const {data,error}=await db.from('products').select('*,categories(name),product_prices(cost_price,selling_price)').order('sort_order').order('name');
+    if(error)throw error;products=data||[];
+    $('productsBody').innerHTML=products.map(p=>{const pr=p.product_prices?.[0]||{};return `<tr><td><b>${esc(p.name)}</b><br><span class="muted">${esc(p.description||'')}</span></td><td>${esc(p.categories?.name||'-')}</td><td>${rupiah(pr.cost_price)}</td><td>${rupiah(pr.selling_price)}</td><td>${p.is_active?'Aktif':'Nonaktif'}</td><td><div class="actions"><button onclick="editProduct('${p.id}')">Edit</button><button class="secondary" onclick="toggleProduct('${p.id}',${!p.is_active})">${p.is_active?'Nonaktifkan':'Aktifkan'}</button></div></td></tr>`}).join('');
+    $('statProducts').textContent=products.filter(p=>p.is_active).length;
+  }
+  window.editProduct=id=>{
+    const p=products.find(x=>x.id===id);if(!p)return;const pr=p.product_prices?.[0]||{};
+    $('productId').value=p.id;$('pName').value=p.name;$('pCategory').value=p.category_id;$('pGame').value=(String(p.description||'').match(/\[\[GAME:([^\]]+)\]\]/i)||[])[1]||'';$('pImage').value=p.image_url||'';$('pSort').value=p.sort_order||0;$('pCost').value=pr.cost_price||0;$('pSell').value=pr.selling_price||0;$('pDesc').value=String(p.description||'').replace(/^\[\[GAME:[^\]]+\]\]\s*/i,'');$('pFields').value=JSON.stringify(p.input_fields||[],null,2);$('productFormTitle').textContent='Edit produk';
+    document.querySelector('[data-tab="products"]').click();window.scrollTo({top:0,behavior:'smooth'});
+  };
+  window.toggleProduct=async(id,active)=>{const {error}=await db.from('products').update({is_active:active}).eq('id',id);if(error)message(error.message,true);else{message('Status produk diperbarui.');await loadProducts();}};
+  $('resetProduct').onclick=()=>{['productId','pName','pImage','pDesc'].forEach(id=>$(id).value='');$('pGame').value='';$('pCost').value=0;$('pSell').value=0;$('pSort').value=0;$('pFields').value='[]';$('productFormTitle').textContent='Tambah produk';};
+  $('saveProduct').onclick=async()=>{
+    try{
+      const name=$('pName').value.trim(),category_id=$('pCategory').value;
+      if(!name||!category_id)throw new Error('Nama produk dan kategori wajib diisi.');
+      const input_fields=JSON.parse($('pFields').value||'[]');
+      const rawDescription=$('pDesc').value.trim();
+      const game=$('pGame').value;
+      const selectedCategory=categories.find(c=>String(c.id)===String(category_id));
+      if(selectedCategory?.slug==='game'&&!game)throw new Error('Pilih nama game untuk produk Top Up Game.');
+      const description=game?'[[GAME:'+game+']] '+rawDescription:rawDescription;
+      const payload={name,category_id,description:description||null,image_url:$('pImage').value.trim()||null,input_fields,is_active:true,sort_order:Number($('pSort').value||0)};
+      let id=$('productId').value;
+      if(id){const {error}=await db.from('products').update(payload).eq('id',id);if(error)throw error;}
+      else{const {data,error}=await db.from('products').insert(payload).select('id').single();if(error)throw error;id=data.id;}
+      const {error:priceError}=await db.from('product_prices').upsert({product_id:id,cost_price:Number($('pCost').value||0),selling_price:Number($('pSell').value||0)},{onConflict:'product_id'});
+      if(priceError)throw priceError;
+      $('resetProduct').click();message('Produk dan harga berhasil disimpan.');await loadProducts();
+    }catch(e){message('Gagal menyimpan produk: '+e.message,true);}
+  };
+  async function loadOrders(){
+    let q=db.from('orders').select('*').order('created_at',{ascending:false}).limit(100);
+    if($('orderFilter').value)q=q.eq('payment_status',$('orderFilter').value);
+    const {data,error}=await q;if(error)throw error;orders=data||[];
+    $('ordersBody').innerHTML=orders.map(o=>`<tr><td><b>${esc(o.order_number)}</b><br>${new Date(o.created_at).toLocaleString('id-ID')}</td><td>${esc(o.customer_name)}<br>${esc(o.customer_phone)}</td><td>${esc(o.product_name)}<br><span class="muted">${esc(JSON.stringify(o.target_data||{}))}</span></td><td>${rupiah(o.amount_idr)}<br>${esc(o.payment_method)}</td><td><select id="pay-${o.id}">${['waiting_payment','pending_verification','paid','rejected','expired','cancelled'].map(s=>`<option value="${s}" ${o.payment_status===s?'selected':''}>${s}</option>`).join('')}</select></td><td><select id="ord-${o.id}">${['waiting_payment','processing','completed','failed','cancelled'].map(s=>`<option value="${s}" ${o.order_status===s?'selected':''}>${s}</option>`).join('')}</select></td><td><textarea id="note-${o.id}" style="min-width:140px;min-height:55px">${esc(o.admin_note||'')}</textarea>${o.payment_proof_path?`<br><span class="muted">Bukti: ${esc(o.payment_proof_path)}</span>`:''}</td><td><button onclick="saveOrder('${o.id}')">Simpan</button></td></tr>`).join('');
+    $('statOrders').textContent=orders.length;$('statVerify').textContent=orders.filter(o=>o.payment_status==='pending_verification').length;$('statProcess').textContent=orders.filter(o=>o.order_status==='processing').length;
+  }
+  window.saveOrder=async id=>{
+    const old=orders.find(o=>o.id===id);
+    const payment_status=$('pay-'+id).value,order_status=$('ord-'+id).value,admin_note=$('note-'+id).value.trim()||null;
+    const patch={payment_status,order_status,admin_note};
+    if(payment_status==='paid'&&old.payment_status!=='paid')patch.paid_at=new Date().toISOString();
+    if(order_status==='completed'&&old.order_status!=='completed')patch.completed_at=new Date().toISOString();
+    const {error}=await db.from('orders').update(patch).eq('id',id);
+    if(error)message('Gagal memperbarui pesanan: '+error.message,true);else{message('Pesanan berhasil diperbarui.');await loadOrders();}
+  };
+  $('orderFilter').onchange=()=>loadOrders().catch(e=>message(e.message,true));
+  $('refreshOrders').onclick=()=>loadOrders().catch(e=>message(e.message,true));
+  async function loadSettings(){
+    const {data,error}=await db.from('store_settings').select('*').eq('id',1).maybeSingle();if(error)throw error;if(!data)return;
+    $('sStore').value=data.store_name||'Fatih Game Store';$('sDana').value=data.dana_number||'';$('sDanaName').value=data.dana_name||'';$('sGopay').value=data.gopay_number||'';$('sGopayName').value=data.gopay_name||'';$('sTelegram').checked=!!data.telegram_notifications_enabled;
+  }
+  $('saveSettings').onclick=async()=>{
+    const payload={id:1,store_name:$('sStore').value.trim()||'Fatih Game Store',dana_number:$('sDana').value.trim()||null,dana_name:$('sDanaName').value.trim()||null,gopay_number:$('sGopay').value.trim()||null,gopay_name:$('sGopayName').value.trim()||null,telegram_notifications_enabled:$('sTelegram').checked};
+    const {error}=await db.from('store_settings').upsert(payload,{onConflict:'id'});if(error)message('Gagal menyimpan pengaturan: '+error.message,true);else message('Pengaturan berhasil disimpan.');
+  };
+  db.auth.getSession().then(({data})=>{if(data.session)startApp();});
 })();
 </script>
 </body>
