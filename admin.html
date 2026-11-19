@@ -146,7 +146,6 @@ h2{font-size:18px;margin:0 0 12px}h3{font-size:15px;margin:0 0 8px}.muted{color:
     if(error) throw error; categories=data||[];
     const categoryOptions=categories.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');
     $('pCategory').innerHTML=categoryOptions;
-    $('vCategory').innerHTML=categoryOptions;
     $('categoriesBody').innerHTML=categories.map(c=>`<tr><td>${esc(c.name)}</td><td>${esc(c.slug)}</td><td>${esc(c.icon||'-')}</td><td>${c.is_active?'Aktif':'Nonaktif'}</td><td><div class="actions"><button class="secondary" onclick="toggleCategory('${c.id}',${!c.is_active})">${c.is_active?'Nonaktifkan':'Aktifkan'}</button></div></td></tr>`).join('');
   }
   window.toggleCategory=async(id,active)=>{const {error}=await db.from('categories').update({is_active:active}).eq('id',id);if(error)message(error.message,true);else{message('Status kategori diperbarui.');await loadCategories();}};
