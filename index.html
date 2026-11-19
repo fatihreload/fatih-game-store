@@ -326,7 +326,7 @@
     const catalogTitle = document.getElementById("catalogTitle");
     const catalogSubtitle = document.getElementById("catalogSubtitle");
     let allProducts = [];
-    let activeCategory = "all";
+    let activeCategory = "";
     let db = null;
     let selectedProduct = null;
 
@@ -357,9 +357,20 @@
     }
 
     function renderProducts() {
+      if (!activeCategory) {
+  productGrid.innerHTML = `
+    <div class="empty">
+      <div style="font-size:27px">🎮</div>
+      <strong>Silakan Pilih Kategori</strong>
+      <span>Pilih Top Up Game, Token PLN, Pulsa, atau Paket Internet.</span>
+    </div>`;
+  catalogTitle.textContent = "Pilih Layanan";
+  catalogSubtitle.textContent = "Pilih kategori untuk melihat produk";
+  return;
+}
       const keyword = searchInput.value.trim().toLowerCase();
       const filtered = allProducts.filter(product => {
-        const categoryMatch = activeCategory === "all" || product.category_slug === activeCategory;
+        const categoryMatch = activeCategory !== "" && product.category_slug === activeCategory;
         const textMatch = `${product.name || ""} ${product.category_name || ""} ${product.description || ""}`.toLowerCase().includes(keyword);
         return categoryMatch && textMatch;
       });
