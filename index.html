@@ -222,13 +222,30 @@
     }
 
   
-    .game-picker{margin-top:14px;padding:14px;border:1px solid #dedaf7;border-radius:16px;background:#fff}
-    .game-picker-title{font-weight:800;margin-bottom:10px;color:#29234a}
+    /* Pemilih game */
+    .game-picker{margin-top:12px;animation:pickerIn .3s ease-out}
+    .game-picker[hidden]{display:none}
+    @keyframes pickerIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+    .game-picker-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin-bottom:10px}
+    .game-picker-title{font-size:13px;font-weight:800;color:#fff}
+    .game-picker-sub{font-size:10px;color:#9ba4c2}
     .game-picker-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-    .game-choice{display:flex;flex-direction:column;align-items:flex-start;gap:5px;padding:12px;border:1px solid #e5e1f4;border-radius:13px;background:#faf9ff;color:#27213f;text-align:left}
-    .game-choice.active{border-color:#7665e8;background:#f0edff;box-shadow:0 0 0 2px #7665e822}
-    .game-choice-icon{font-size:25px}.game-choice small{font-size:11px;color:#77718e}
-    @media(min-width:650px){.game-picker-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+    .game-choice{position:relative;isolation:isolate;overflow:hidden;min-height:136px;padding:12px;border-radius:16px;border:1px solid #ffffff26;background:linear-gradient(155deg,var(--g1),var(--g2));color:#fff;text-align:left;display:flex;flex-direction:column;justify-content:flex-end;gap:2px;box-shadow:0 8px 20px #0006;transition:transform .18s ease,box-shadow .18s ease,opacity .18s ease,filter .18s ease}
+    .game-choice:before{content:"";position:absolute;inset:0;z-index:-1;background:radial-gradient(circle at 78% 22%,#ffffff40 0,#ffffff00 46%),linear-gradient(to top,#050814e6 0,#05081400 72%)}
+    .game-choice-icon{position:absolute;top:10px;right:10px;width:62px;height:62px;display:grid;place-items:center;font-size:36px;border-radius:18px;background:#ffffff24;border:1px solid #ffffff40;backdrop-filter:blur(2px);transform:rotate(8deg);box-shadow:0 8px 16px #0004;transition:transform .2s ease}
+    .game-choice strong{font-size:14px;line-height:1.25;font-weight:800;text-shadow:0 2px 8px #0008}
+    .game-choice small{font-size:10px;line-height:1.4;color:#ffffffcc}
+    .game-choice-count{align-self:flex-start;margin-top:7px;padding:4px 9px;border-radius:20px;background:#050814a6;border:1px solid #ffffff2e;font-size:9px;font-weight:700;color:#fff}
+    .game-choice-check{position:absolute;top:10px;left:10px;width:22px;height:22px;border-radius:50%;display:none;place-items:center;background:#10d9ee;color:#06101f;font-size:12px;font-weight:800;box-shadow:0 0 12px #10d9ee}
+    .game-choice:hover{transform:translateY(-3px);box-shadow:0 12px 26px #0008}
+    .game-choice:hover .game-choice-icon{transform:rotate(0deg) scale(1.06)}
+    .game-choice:focus-visible{outline:2px solid #10d9ee;outline-offset:2px}
+    .game-choice.active{border-color:#fff;box-shadow:0 0 0 2px #10d9ee,0 0 24px var(--g1)}
+    .game-choice.active .game-choice-check{display:grid}
+    .game-picker-grid.has-active .game-choice:not(.active){opacity:.55;filter:saturate(.7)}
+    .game-picker-grid.has-active .game-choice:not(.active):hover{opacity:.9;filter:none}
+    @media(min-width:650px){.game-picker-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.game-choice{min-height:170px;padding:14px}.game-choice strong{font-size:15px}}
+    @media(prefers-reduced-motion:reduce){.game-picker{animation:none}.game-choice,.game-choice-icon{transition:none}}
 
 </style>
 </head>
@@ -367,10 +384,10 @@
     }
 
     const games = [
-      { name: "Free Fire", icon: "🔥", hint: "Diamond Free Fire" },
-      { name: "Mobile Legends", icon: "⚔️", hint: "Diamond Mobile Legends" },
-      { name: "PUBG Mobile", icon: "🎯", hint: "UC PUBG Mobile" },
-      { name: "Roblox", icon: "🧱", hint: "Robux Roblox" }
+      { name: "Free Fire", icon: "🔥", hint: "Diamond Free Fire", g1: "#ff9a1f", g2: "#b3260f" },
+      { name: "Mobile Legends", icon: "⚔️", hint: "Diamond Mobile Legends", g1: "#3b78ff", g2: "#241a78" },
+      { name: "PUBG Mobile", icon: "🎯", hint: "UC PUBG Mobile", g1: "#c9a64a", g2: "#3f4d22" },
+      { name: "Roblox", icon: "🧱", hint: "Robux Roblox", g1: "#f0414a", g2: "#4a1230" }
     ];
 
     function getProductGame(product) {
@@ -390,10 +407,18 @@
       const picker = document.getElementById("gamePicker");
       if (activeCategory !== "game") { picker.hidden = true; picker.innerHTML = ""; return; }
       picker.hidden = false;
-      picker.innerHTML = `<div class="game-picker-title">Pilih game yang ingin di top up</div><div class="game-picker-grid">${games.map(game => `
-        <button type="button" class="game-choice ${activeGame === game.name ? "active" : ""}" data-game="${escapeHtml(game.name)}">
-          <span class="game-choice-icon">${game.icon}</span><strong>${escapeHtml(game.name)}</strong><small>${escapeHtml(game.hint)}</small>
-        </button>`).join("")}</div>`;
+      const cards = games.map(game => {
+        const total = allProducts.filter(p => p.category_slug === "game" && getProductGame(p) === game.name).length;
+        return `
+        <button type="button" class="game-choice ${activeGame === game.name ? "active" : ""}" data-game="${escapeHtml(game.name)}" style="--g1:${game.g1};--g2:${game.g2}" aria-pressed="${activeGame === game.name}">
+          <span class="game-choice-check" aria-hidden="true">✓</span>
+          <span class="game-choice-icon" aria-hidden="true">${game.icon}</span>
+          <strong>${escapeHtml(game.name)}</strong>
+          <small>${escapeHtml(game.hint)}</small>
+          <span class="game-choice-count">${total ? total + " produk" : "Segera hadir"}</span>
+        </button>`;
+      }).join("");
+      picker.innerHTML = `<div class="game-picker-head"><div class="game-picker-title">Pilih game</div><div class="game-picker-sub">${games.length} game tersedia</div></div><div class="game-picker-grid ${activeGame ? "has-active" : ""}">${cards}</div>`;
     }
 
     function renderProducts() {
@@ -456,6 +481,7 @@
       activeGame = button.dataset.game;
       renderGamePicker();
       renderProducts();
+      document.querySelector(".catalog").scrollIntoView({ behavior: "smooth", block: "start" });
     });
 
     searchInput.addEventListener("input", renderProducts);
@@ -474,6 +500,7 @@
 
         if (error) throw error;
         allProducts = data || [];
+        renderGamePicker();
         renderProducts();
       } catch (error) {
         console.error("Gagal memuat katalog:", error);
