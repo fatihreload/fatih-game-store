@@ -59,7 +59,20 @@ h2{font-size:18px;margin:0 0 12px}h3{font-size:15px;margin:0 0 8px}.muted{color:
 
     <section id="tab-products" class="hidden">
       <div class="panel">
-        <h2 id="productFormTitle">Tambah produk</h2>
+        <h2>Tambah nominal game dengan cepat</h2>
+        <p class="muted">Setiap nominal akan dibuat sebagai satu produk tersendiri. Isi sendiri nominal dan harganya.</p>
+        <div class="formgrid">
+          <label>Nama game<input id="vGame" placeholder="Contoh: Free Fire"></label>
+          <label>Kategori<select id="vCategory"></select></label>
+          <label>Jumlah / nama nominal<input id="vAmount" placeholder="Contoh: 5 Diamond"></label>
+          <label>URL gambar (opsional)<input id="vImage" placeholder="https://..."></label>
+          <label>Harga modal (Rp)<input id="vCost" type="number" min="0" placeholder="Isi harga modal"></label>
+          <label>Harga jual (Rp)<input id="vSell" type="number" min="0" placeholder="Isi harga jual"></label>
+        </div>
+        <button id="addVariant">Tambah nominal</button>
+      </div>
+      <div class="panel">
+        <h2 id="productFormTitle">Tambah / edit produk manual</h2>
         <input id="productId" type="hidden">
         <div class="formgrid">
           <label>Nama produk<input id="pName" placeholder="Contoh: Mobile Legends 86 Diamond"></label>
@@ -144,7 +157,9 @@ h2{font-size:18px;margin:0 0 12px}h3{font-size:15px;margin:0 0 8px}.muted{color:
   async function loadCategories(){
     const {data,error}=await db.from('categories').select('*').order('sort_order').order('name');
     if(error) throw error; categories=data||[];
-    $('pCategory').innerHTML=categories.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');
+    const categoryOptions=categories.map(c=>`<option value="${c.id}">${esc(c.name)}</option>`).join('');
+    $('pCategory').innerHTML=categoryOptions;
+    $('vCategory').innerHTML=categoryOptions;
     $('categoriesBody').innerHTML=categories.map(c=>`<tr><td>${esc(c.name)}</td><td>${esc(c.slug)}</td><td>${esc(c.icon||'-')}</td><td>${c.is_active?'Aktif':'Nonaktif'}</td><td><div class="actions"><button class="secondary" onclick="toggleCategory('${c.id}',${!c.is_active})">${c.is_active?'Nonaktifkan':'Aktifkan'}</button></div></td></tr>`).join('');
   }
   window.toggleCategory=async(id,active)=>{const {error}=await db.from('categories').update({is_active:active}).eq('id',id);if(error)message(error.message,true);else{message('Status kategori diperbarui.');await loadCategories();}};
@@ -153,6 +168,39 @@ h2{font-size:18px;margin:0 0 12px}h3{font-size:15px;margin:0 0 8px}.muted{color:
     if(!name||!slug){message('Nama dan slug kategori wajib diisi.',true);return;}
     const {error}=await db.from('categories').insert({name,slug,icon:$('cIcon').value.trim()||null,sort_order:Number($('cSort').value||0)});
     if(error)message('Gagal menambah kategori: '+error.message,true);else{$('cName').value=$('cSlug').value=$('cIcon').value='';message('Kategori berhasil ditambahkan.');await loadCategories();}
+  };
+  $('addVariant').onclick=async()=>{
+    const game=$('vGame').value.trim();
+    const amount=$('vAmount').value.trim();
+    const category_id=$('vCategory').value;
+    const cost=Number($('vCost').value);
+    const sell=Number($('vSell').value);
+    if(!game||!amount||!category_id){message('Nama game, kategori, dan nominal wajib diisi.',true);return;}
+    if($('vCost').value===''||$('vSell').value===''||!Number.isFinite(cost)||!Number.isFinite(sell)||cost<0||sell<0){message('Isi harga modal dan harga jual dengan angka yang benar.',true);return;}
+    const button=$('addVariant');button.disabled=true;
+    try{
+      const payload={
+        name:game+' '+amount,
+        category_id,
+        description:'Top up '+game+' - '+amount,
+        image_url:$('vImage').value.trim()||null,
+        input_fields:[{name:'user_id',label:'Player ID',type:'text',required:true}],
+        is_active:true,
+        sort_order:0
+      };
+      const {data,error}=await db.from('products').insert(payload).select('id').single();
+      if(error)throw error;
+      const {error:priceError}=await db.from('product_prices').upsert(
+        {product_id:data.id,cost_price:cost,selling_price:sell},
+        {onConflict:'product_id'}
+      );
+      if(priceError)throw priceError;
+      $('vAmount').value='';$('vCost').value='';$('vSell').value='';
+      message('Nominal '+payload.name+' berhasil ditambahkan dengan harga yang kamu isi.');
+      await loadProducts();
+    }catch(e){
+      message('Gagal menambahkan nominal: '+e.message,true);
+    }finally{button.disabled=false;}
   };
   async function loadProducts(){
     const {data,error}=await db.from('products').select('*,categories(name),product_prices(cost_price,selling_price)').order('sort_order').order('name');
