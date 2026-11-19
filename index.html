@@ -244,6 +244,16 @@
     .game-choice.active .game-choice-check{display:grid}
     .game-picker-grid.has-active .game-choice:not(.active){opacity:.55;filter:saturate(.7)}
     .game-picker-grid.has-active .game-choice:not(.active):hover{opacity:.9;filter:none}
+    .game-choice-icon img,.game-selected-logo img{width:100%;height:100%;object-fit:cover;display:block}
+    .game-choice-icon.has-logo{transform:rotate(0);overflow:hidden;background:#ffffff2e}
+    .game-selected{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:16px;border:1px solid #ffffff40;background:linear-gradient(120deg,var(--g1),var(--g2));box-shadow:0 0 22px #0006;color:#fff}
+    .game-selected-logo{flex:0 0 52px;width:52px;height:52px;border-radius:14px;overflow:hidden;display:grid;place-items:center;font-size:28px;background:#ffffff2e;border:1px solid #ffffff4d}
+    .game-selected-info{flex:1;min-width:0}
+    .game-selected-info strong{display:block;font-size:14px;text-shadow:0 2px 8px #0008}
+    .game-selected-info small{display:block;font-size:10px;color:#ffffffcc;margin-top:2px}
+    .game-change{flex:0 0 auto;border:1px solid #ffffff59;background:#050814a6;color:#fff;border-radius:20px;padding:8px 12px;font-size:10px;font-weight:800}
+    .game-change:hover{background:#050814d9}
+    .game-change:focus-visible{outline:2px solid #10d9ee;outline-offset:2px}
     @media(min-width:650px){.game-picker-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.game-choice{min-height:170px;padding:14px}.game-choice strong{font-size:15px}}
     @media(prefers-reduced-motion:reduce){.game-picker{animation:none}.game-choice,.game-choice-icon{transition:none}}
 
@@ -384,10 +394,10 @@
     }
 
     const games = [
-      { name: "Free Fire", icon: "🔥", hint: "Diamond Free Fire", g1: "#ff9a1f", g2: "#b3260f" },
-      { name: "Mobile Legends", icon: "⚔️", hint: "Diamond Mobile Legends", g1: "#3b78ff", g2: "#241a78" },
-      { name: "PUBG Mobile", icon: "🎯", hint: "UC PUBG Mobile", g1: "#c9a64a", g2: "#3f4d22" },
-      { name: "Roblox", icon: "🧱", hint: "Robux Roblox", g1: "#f0414a", g2: "#4a1230" }
+      { name: "Free Fire", logo: "logos/free-fire.png", icon: "🔥", hint: "Diamond Free Fire", g1: "#ff9a1f", g2: "#b3260f" },
+      { name: "Mobile Legends", logo: "logos/mobile-legends.png", icon: "⚔️", hint: "Diamond Mobile Legends", g1: "#3b78ff", g2: "#241a78" },
+      { name: "PUBG Mobile", logo: "logos/pubg-mobile.png", icon: "🎯", hint: "UC PUBG Mobile", g1: "#c9a64a", g2: "#3f4d22" },
+      { name: "Roblox", logo: "logos/roblox.png", icon: "🧱", hint: "Robux Roblox", g1: "#f0414a", g2: "#4a1230" }
     ];
 
     function getProductGame(product) {
@@ -403,22 +413,43 @@
         .replace(/^\[\[GAME:[^\]]+\]\]\s*/i, "");
     }
 
+    function gameLogoHtml(game) {
+      return `<img src="${escapeHtml(game.logo)}" alt="" data-fallback="${escapeHtml(game.icon)}">`;
+    }
+
     function renderGamePicker() {
       const picker = document.getElementById("gamePicker");
       if (activeCategory !== "game") { picker.hidden = true; picker.innerHTML = ""; return; }
       picker.hidden = false;
-      const cards = games.map(game => {
-        const total = allProducts.filter(p => p.category_slug === "game" && getProductGame(p) === game.name).length;
-        return `
-        <button type="button" class="game-choice ${activeGame === game.name ? "active" : ""}" data-game="${escapeHtml(game.name)}" style="--g1:${game.g1};--g2:${game.g2}" aria-pressed="${activeGame === game.name}">
-          <span class="game-choice-check" aria-hidden="true">✓</span>
-          <span class="game-choice-icon" aria-hidden="true">${game.icon}</span>
-          <strong>${escapeHtml(game.name)}</strong>
-          <small>${escapeHtml(game.hint)}</small>
-          <span class="game-choice-count">${total ? total + " produk" : "Segera hadir"}</span>
-        </button>`;
-      }).join("");
-      picker.innerHTML = `<div class="game-picker-head"><div class="game-picker-title">Pilih game</div><div class="game-picker-sub">${games.length} game tersedia</div></div><div class="game-picker-grid ${activeGame ? "has-active" : ""}">${cards}</div>`;
+      const selected = games.find(game => game.name === activeGame);
+      if (selected) {
+        picker.innerHTML = `
+          <div class="game-selected" style="--g1:${selected.g1};--g2:${selected.g2}">
+            <span class="game-selected-logo" aria-hidden="true">${gameLogoHtml(selected)}</span>
+            <div class="game-selected-info"><strong>${escapeHtml(selected.name)}</strong><small>${escapeHtml(selected.hint)}</small></div>
+            <button type="button" class="game-change" data-change-game>Ganti game</button>
+          </div>`;
+      } else {
+        const cards = games.map(game => {
+          const total = allProducts.filter(p => p.category_slug === "game" && getProductGame(p) === game.name).length;
+          return `
+          <button type="button" class="game-choice" data-game="${escapeHtml(game.name)}" style="--g1:${game.g1};--g2:${game.g2}">
+            <span class="game-choice-icon has-logo" aria-hidden="true">${gameLogoHtml(game)}</span>
+            <strong>${escapeHtml(game.name)}</strong>
+            <small>${escapeHtml(game.hint)}</small>
+            <span class="game-choice-count">${total ? total + " produk" : "Segera hadir"}</span>
+          </button>`;
+        }).join("");
+        picker.innerHTML = `<div class="game-picker-head"><div class="game-picker-title">Pilih game</div><div class="game-picker-sub">${games.length} game tersedia</div></div><div class="game-picker-grid">${cards}</div>`;
+      }
+      // Jika file logo belum ada, tampilkan emoji sebagai cadangan.
+      picker.querySelectorAll("img[data-fallback]").forEach(img => {
+        img.addEventListener("error", () => {
+          const holder = img.parentElement;
+          holder.classList.remove("has-logo");
+          holder.textContent = img.dataset.fallback;
+        }, { once: true });
+      });
     }
 
     function renderProducts() {
@@ -476,12 +507,19 @@
     });
 
     document.getElementById("gamePicker").addEventListener("click", event => {
+      if (event.target.closest("[data-change-game]")) {
+        activeGame = "";
+        searchInput.value = "";
+        renderGamePicker();
+        renderProducts();
+        return;
+      }
       const button = event.target.closest("[data-game]");
       if (!button) return;
       activeGame = button.dataset.game;
+      searchInput.value = "";
       renderGamePicker();
       renderProducts();
-      document.querySelector(".catalog").scrollIntoView({ behavior: "smooth", block: "start" });
     });
 
     searchInput.addEventListener("input", renderProducts);
